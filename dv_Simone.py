@@ -10,7 +10,6 @@ from matplotlib import colors
 import matplotlib as mpl
 from matplotlib.ticker import PercentFormatter
 from mpl_toolkits.mplot3d import Axes3D
-#import ROOT
 
 # Read the dataframes from the csv files
 hits_ = pd.read_csv('event000004590-hits.csv')
@@ -39,21 +38,8 @@ x_col = hits_['x'].values.tolist()
 y_col = hits_['y'].values.tolist()
 z_col = hits_['z'].values.tolist()
 
+# Define a list of colours for the different tracks
 colours = ['red','blue','yellow','orange','green']
-
-# Plot an histogram showing how the x values are distributed
-    #plt.hist(x_values)
-    #plt.show()
-
-# Plot a 2D scatter plot of the x and y values 
-    #plt.scatter(x_values,y_values)
-    #plt.show()
-
-# Plot a 3D scatter plot of the x, y and z values 
-    #fig = plt.figure()
-    #ax = fig.add_subplot(111, projection='3d')
-    #ax.scatter(x_values,y_values,z_values)
-    #plt.show()
 
 def hit_index(hit_id):                              # Define a function that takes an hit_id 
     hits_list = hits_['hit_id'].values.tolist()     # and returns the index in the column series
@@ -85,25 +71,11 @@ def vis_particle(particle_id):
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(x_hit_vis,y_hit_vis,z_hit_vis)
-    plt.xlabel("x")
-    plt.ylabel("y")
-    plt.set_zlabel("z")
+    ax.scatter(z_hit_vis,x_hit_vis,y_hit_vis)
+    plt.xlabel("z")
+    plt.ylabel("x")
+    plt.set_zlabel("y")
     plt.show()
-"""
-# Create a dataframe that contains the particles and the hit positions
-df_hit_positions_x = []
-df_hit_positions_y = []
-df_hit_positions_z = []
-for id in par_list_t:
-    hit_positions_x = []
-    hit_positions_y = []
-    hit_positions_z = []
-    for hit in sort_hits(id):
-        hit_positions_x.append()
-        hit_positions_y.append()
-        hit_positions_z.append()
-"""
 
 # Compute the trasverse momentum with the particle file
 p_trasv = pd.concat([np.sqrt(particles_['px']**2 + particles_['py']**2)],axis=1)
@@ -129,14 +101,14 @@ for i in par_hits:
         x_.append(hits_['x'][hit_index(j)])
         y_.append(hits_['y'][hit_index(j)])
         z_.append(hits_['z'][hit_index(j)])
-    ax.scatter(x_,y_,z_, color=colours[colour_index], label=str(par_ids[colour_index]))
+    ax.scatter(z_,x_,y_, color=colours[colour_index], label=str(par_ids[colour_index]))
     colour_index += 1
 
 #ax.legend()
 ax.set_title("Visualization of the first 5 particles")
-plt.xlabel("x")
-plt.ylabel("y")
-ax.set_zlabel("z")
+plt.xlabel("z")
+plt.ylabel("x")
+ax.set_zlabel("y")
 plt.show()
 
 # Read the dataframes from the first 10 events
@@ -156,6 +128,7 @@ for i in range(10):
     cells_ten_events.append(pd.read_csv(name_c))
     truth_ten_events.append(pd.read_csv(name_t))
 
+"""
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
@@ -178,6 +151,7 @@ plt.xlabel("x")
 plt.ylabel("y")
 ax.set_zlabel("z")
 plt.show()
+"""
 
 # Group hits by volume and layer, then visualize them
 volumes_ = list(set(volumes_col))      #Removes all the duplicates from the list
@@ -213,37 +187,14 @@ def vis_same_layer(vol_,lay_):
         z_.append(z_col[index_])
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(x_,y_,z_, label=label_)
+    ax.scatter(z_,x_,y_, label=label_)
     ax.legend()
     ax.set_title("Hits on layer " + str(lay_) + " and volume " + str(vol_))
-    plt.xlabel("x")
-    plt.ylabel("y")
-    ax.set_zlabel("z")
+    plt.xlabel("z")
+    plt.ylabel("x")
+    ax.set_zlabel("y")
     plt.show()
 vis_same_layer(7,2)
-
-# Write hits per layer on a .dat file, so that ROOT can read it
-def write_to_dat(vol_,lay_):
-    open_file = open('test.dat', 'a')
-    index_list = sort_layer(vol_,lay_)
-
-    for index_ in index_list:
-        open_file.write(str(hits_['x'].values.tolist()[index_]) + '\t' 
-        + str(hits_['y'].values.tolist()[index_]) + '\t' 
-        + str(hits_['z'].values.tolist()[index_]) + '\t' + str(index(vol_,lay_)) +'\n')
-    open_file.close()
-#write_to_dat(7,2)
-
-def write_to_csv(vol_,lay_):
-    open_file = open('test.csv', 'a')
-    index_list = sort_layer(vol_,lay_)
-
-    open_file.write('x,y,z')
-    for index_ in index_list:
-        open_file.write(str(hits_['x'].values.tolist()[index_]) + ',' 
-        + str(hits_['y'].values.tolist()[index_]) + ',' 
-        + str(hits_['z'].values.tolist()[index_]) + '\n')
-    open_file.close()
 
 # Define the function that introduces the new index for the detector layers
     # Solution 1
@@ -266,23 +217,25 @@ def index(vol_,lay_):
     return index_
 
     # Solution 2
+length = len(layer_col)
+list_ = []
+    
+for i in range(length):
+    list_.append(volumes_col[i] + layer_col[i]/100)
+list_ = list(set(list_))
+list_.sort()
+list__ = []
+for element in list_:
+    element = str(element)
+    split_ = element.split(sep='.')
+    if len(split_[1]) == 1:
+        list__.append([int(split_[0]),int(split_[1])*10])
+    else:
+        list__.append([int(split_[0]),int(split_[1])])
+
 def indexing(v_,l_):
     index = 0
-    length = len(layer_col)
-    list_ = []
     
-    for i in range(length):
-        list_.append(volumes_col[i] + layer_col[i]/100)
-    list_ = list(set(list_))
-    list_.sort()
-    list__ = []
-    for element in list_:
-        element = str(element)
-        split_ = element.split(sep='.')
-        if len(split_[1]) == 1:
-            list__.append([int(split_[0]),int(split_[1])*10])
-        else:
-            list__.append([int(split_[0]),int(split_[1])])
     
     for i in range(len(list__)):
         if list__[i]==[v_,l_]:
@@ -291,3 +244,43 @@ def indexing(v_,l_):
             index += 1
 
     return index
+
+# Write hits per layer on a .dat file, so that ROOT can read it
+def write_to_dat(vol_,lay_):
+    open_file = open('test.dat', 'a')
+    index_list = sort_layer(vol_,lay_)
+
+    for index_ in index_list:
+        open_file.write(str(hits_['x'].values.tolist()[index_]) + '\t' 
+        + str(hits_['y'].values.tolist()[index_]) + '\t' 
+        + str(hits_['z'].values.tolist()[index_]) + '\t' + str(index(vol_,lay_)) +'\n')
+    open_file.close()
+"""
+for comb in list__:
+    write_to_dat(comb[0],comb[1])
+"""
+
+def write_to_csv(vol_,lay_):
+    open_file = open('test.csv', 'a')
+    index_list = sort_layer(vol_,lay_)
+
+    open_file.write('x,y,z')
+    for index_ in index_list:
+        open_file.write(str(hits_['x'].values.tolist()[index_]) + ',' 
+        + str(hits_['y'].values.tolist()[index_]) + ',' 
+        + str(hits_['z'].values.tolist()[index_]) + '\n')
+    open_file.close()
+
+def is_palindrome(str_):
+    length_ = len(str_)
+    if (length_%2) == 0:
+        h_len = length_/2
+    else:
+        h_len = length_/2 -0.5
+    result = True
+
+    for i in range(h_len):
+        if(str_[i]!=str_[i-1]):
+            result = False
+
+    return result
