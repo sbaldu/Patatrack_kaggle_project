@@ -1,6 +1,14 @@
+from re import T
+from matplotlib.pyplot import eventplot
+from numpy import sort, triu_indices
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.mlab as mlab
+import matplotlib.pyplot as plt
+from matplotlib import colors
+import matplotlib as mpl
+from matplotlib.ticker import PercentFormatter
+from mpl_toolkits.mplot3d import Axes3D
 
 
 ##Reading in files + pulling important colns
