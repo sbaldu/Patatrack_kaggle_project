@@ -12,10 +12,13 @@ from matplotlib.ticker import PercentFormatter
 from mpl_toolkits.mplot3d import Axes3D
 import glob
 
+#Define the path to the csv files
+path = '/home/simonb/Documents/Courses/Thesis/'
+
 # Read the dataframes from the csv files
-hits_ = pd.read_csv('~/Documents/Courses/Thesis/train_3/event000004590-hits.csv')
-particles_ = pd.read_csv('~/Documents/Courses/Thesis/train_3/event000004590-particles.csv')
-truth_ = pd.read_csv('~/Documents/Courses/Thesis/train_3/event000004590-truth.csv')
+hits_ = pd.read_csv(path+'train_3/event000004590-hits.csv')
+particles_ = pd.read_csv(path+'train_3/event000004590-particles.csv')
+truth_ = pd.read_csv(path+'train_3/event000004590-truth.csv')
 
 print('Hits')
 print(hits_)
@@ -33,25 +36,16 @@ y_col = hits_['y'].values.tolist()
 z_col = hits_['z'].values.tolist()
 
 # Define a list of colours for the different tracks
-colours = ['red','blue','yellow','orange','green','aqua','beige','black','chartreuse','chocolate','coral','cyan',
-'crimson','gold','fuchsia','green','salmon','lime','navy','khaki','lavender','magenta','olive','wheat','ivory',
-'grey','maroon','lightblue','plum','sienna','silver','teal','violet','pink','orchid','torquoise','tan','indigo',
-'red','blue','yellow','orange','green','aqua','beige','black','chartreuse','chocolate','coral','cyan',
-'crimson','gold','fuchsia','green','salmon','lime','navy','khaki','lavender','magenta','olive','wheat','ivory',
-'grey','maroon','lightblue','plum','sienna','silver','teal','violet','pink','orchid','torquoise','tan','indigo',
-'red','blue','yellow','orange','green','aqua','beige','black','chartreuse','chocolate','coral','cyan',
-'crimson','gold','fuchsia','green','salmon','lime','navy','khaki','lavender','magenta','olive','wheat','ivory',
-'grey','maroon','lightblue','plum','sienna','silver','teal','violet','pink','orchid','torquoise','tan','indigo',
-'red','blue','yellow','orange','green','aqua','beige','black','chartreuse','chocolate','coral','cyan',
-'crimson','gold','fuchsia','green','salmon','lime','navy','khaki','lavender','magenta','olive','wheat','ivory',
-'grey','maroon','lightblue','plum','sienna','silver','teal','violet','pink','orchid','torquoise','tan','indigo',
-'red','blue','yellow','orange','green','aqua','beige','black','chartreuse','chocolate','coral','cyan',
-'crimson','gold','fuchsia','green','salmon','lime','navy','khaki','lavender','magenta','olive','wheat','ivory',
-'grey','maroon','lightblue','plum','sienna','silver','teal','violet','pink','orchid','torquoise','tan','indigo',
-'red','blue','yellow','orange','green','aqua','beige','black','chartreuse','chocolate','coral','cyan',
-'crimson','gold','fuchsia','green','salmon','lime','navy','khaki','lavender','magenta','olive','wheat','ivory',
-'grey','maroon','lightblue','plum','sienna','silver','teal','violet','pink','orchid','torquoise','tan','indigo']
-print(len(colours))
+colours = ['black','dimgrey','gray','darkgray','silver','lightgray','gainsboro','whitesmoke',
+'rosybrown','lightcoral','indianred','brown','firebrick','maroon','darkred','red','mistyrose',
+'salmon','tomato','darksalmon','coral','orangered','lightsalmon','sienna','seashell','chocolate',
+'saddlebrown','sandybrown','peachpuff','peru','linen','bisque','darkorange','burlywood','tan',
+'navajowhite','blanchedalmond''papayawhip','moccasin','orange','wheat','darkgoldenrod','goldenrod',
+'cornsilk','gold','lemonchiffon','khaki','palegoldenrod','darkkhaki','beige','olive','yellow',
+'olivedrab','yellowgreen','darkolivegreen','greenyellow','lawngreen','darkseagreen','palegreen',
+'forestgreen','darkgreen','lime','springgreen','mediumspringgreen','mediumaquamarine','aquamarine',
+'turquoise','lightseagreen','paleturquoise','darkslategray','teal','aqua','darkturquoise','cadetblue',
+'powderblue','deepskyblue','steelblue']
 
 def hit_index(hit_id):                              # Define a function that takes an hit_id 
     hits_list = hits_['hit_id'].values.tolist()     # and returns the index in the column series
@@ -130,41 +124,17 @@ cells_ten_events = []
 truth_ten_events = []
 
 for i in range(10):
-    name_h = '~/Documents/Courses/Thesis/train_3/event00000459' + str(i) +'-hits.csv'
-    name_p = '~/Documents/Courses/Thesis/train_3/event00000459' + str(i) +'-particles.csv'
-    name_c = '~/Documents/Courses/Thesis/train_3/event00000459' + str(i) +'-cells.csv'
-    name_t = '~/Documents/Courses/Thesis/train_3/event00000459' + str(i) +'-truth.csv'
+    name_h = path+'train_3/event00000459' + str(i) +'-hits.csv'
+    name_p = path+'train_3/event00000459' + str(i) +'-particles.csv'
+    name_c = path+'train_3/event00000459' + str(i) +'-cells.csv'
+    name_t = path+'train_3/event00000459' + str(i) +'-truth.csv'
 
     hits_ten_events.append(pd.read_csv(name_h))     # Lists of DataFrames
     particles_ten_events.append(pd.read_csv(name_p))
     cells_ten_events.append(pd.read_csv(name_c))
     truth_ten_events.append(pd.read_csv(name_t))
 
-"""
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
 
-for event in particles_ten_events:
-    ev_particles = event['particle_id'].values.tolist()
-    ev_particles.sort()
-    for particle in ev_particles:
-        if (particle in par_ids) == True:
-            particle_hits = sort_hits(particle)
-            x_10 = []
-            y_10 = []
-            z_10 = []
-            for i in particle_hits:
-                x_10.append(hits_['x'].values.tolist()[i])
-                y_10.append(hits_['y'].values.tolist()[i])
-                z_10.append(hits_['z'].values.tolist()[i])
-            ax.scatter(x_10,y_10,z_10, color=colours[par_ids.index(particle)])
-ax.set_title("First ten events")
-plt.xlabel("x")
-plt.ylabel("y")
-ax.set_zlabel("z")
-plt.show()
-
-"""
 # Group hits by volume and layer, then visualize them
 volumes_ = list(set(volumes_col))      #Removes all the duplicates from the list
 
@@ -207,6 +177,7 @@ def vis_same_layer(vol_,lay_):
     ax.set_zlabel("y")
     plt.xlim(-3000,3000)
     plt.show()
+
 vis_same_layer(7,2)
 
 # Define the function that introduces the new index for the detector layers
@@ -214,7 +185,7 @@ vis_same_layer(7,2)
 maxLayerId = 0
 maxVolumeId = 0
 
-files = glob.glob('/home/simonb/Documents/Courses/Thesis/train_3/event00000*-hits.csv')
+files = glob.glob(path+'train_3/event00000*-hits.csv')
 """
 for file in files:
     ev = pd.read_csv(file)
@@ -226,22 +197,13 @@ for file in files:
         maxLayerId = max(maxLayerId, ev_lay_col[i])
         maxVolumeId = max(maxVolumeId, ev_vol_col[i])
 #print(maxLayerId)      it returns 14 
-
-def layerGlobalIndex(volume,layer):
-    return (volume-7)*(maxLayerId + 1) + layer
 """
 maxLayerId = 14
 def layerGlobalIndex(volume,layer):
     return (volume-7)*(maxLayerId + 1) + layer
-
 # Take all the hits and assign an index to each of them. Then write all of this in on a file
 
-#radius_list = []
-#z_list = []
-#index_list = []
-
 fig = plt.figure()
-#ax = fig.add_subplot(111, projection='2d')
 ev = pd.read_csv(files[10])
 ev_hitid_col = ev['hit_id'].values.tolist()
 ev_lay_col = ev['layer_id'].values.tolist()
@@ -251,48 +213,23 @@ ev_y_col = ev['y'].values.tolist()
 ev_z_col = ev['z'].values.tolist()
 length_= len(ev_lay_col)
  
-#for i in range(length_):
-for i in range(10000):
-    #radius_list.append(np.sqrt(ev_x_col[i]**2 + ev_y_col[i]**2))
-    #z_list.append(ev_z_col[i])
-    #index_list.append(layerGlobalIndex(ev_lay_col[i],ev_vol_col[i]))
-    radius_ = np.sqrt(ev_x_col[i]**2 + ev_y_col[i]**2)
-    z_value = ev_z_col[i]
-    index_value = layerGlobalIndex(ev_lay_col[i],ev_vol_col[i])
-    print(i)
-    plt.scatter(z_value,radius_, color=colours[index_value])
-"""
-for file in files:
-    ev = pd.read_csv(file)
+radius = []
+z = []
+index = []
 
-    ev_hitid_col = ev['hit_id'].values.tolist()
-    ev_lay_col = ev['layer_id'].values.tolist()
-    ev_vol_col = ev['volume_id'].values.tolist()
-    ev_x_col = ev['x'].values.tolist()
-    ev_y_col = ev['y'].values.tolist()
-    ev_z_col = ev['z'].values.tolist()
-    length_= len(ev_lay_col)
-    print(files.index(file))
- 
-    for i in range(length_):
-        #radius_list.append(np.sqrt(ev_x_col[i]**2 + ev_y_col[i]**2))
-        #z_list.append(ev_z_col[i])
-        #index_list.append(layerGlobalIndex(ev_lay_col[i],ev_vol_col[i]))
-        radius_ = np.sqrt(ev_x_col[i]**2 + ev_y_col[i]**2)
-        z_value = ev_z_col[i]
-        index_value = layerGlobalIndex(ev_lay_col[i],ev_vol_col[i])
+for i in range(length_):
+    if (i%20) == 0:
+        radius.append(np.sqrt(ev_x_col[i]**2 + ev_y_col[i]**2))
+        z.append(ev_z_col[i])
+        index.append(layerGlobalIndex(ev_vol_col[i],ev_lay_col[i]))
+        #plt.scatter(z_value,radius_, c=index_value)
+        #cm = plt.cm.get_cmap('rainbow')
 
-        plt.scatter(z_value,radius_, color=colours[index_value])
-"""
-#plt.scatter(z_list,radius_list_)
-#ax.legend()
-#ax.set_title("Hits on layer " + str(lay_) + " and volume " + str(vol_))
-plt.xlabel("z")
-plt.ylabel("r")
-#plt.xlim(-3000,3000)
+cm = plt.cm.get_cmap('nipy_spectral')    
+plt.scatter(z,radius, c = index, cmap = cm)
+plt.xlabel("z (mm)")
+plt.ylabel("r (mm)")
 plt.show()
-#pos_and_ind = pd.concat([radius_list,z_list,index_list],axis=1)
-#p_a_i_sorted = pos_and_ind.sort_values(by=2,ascending=True)
 
 
 # Write hits per layer on a .dat file, so that ROOT can read it
@@ -321,6 +258,31 @@ def write_to_csv(vol_,lay_):
         + str(hits_['y'].values.tolist()[index_]) + ',' 
         + str(hits_['z'].values.tolist()[index_]) + '\n')
     open_file.close()
+"""
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+for event in particles_ten_events:
+    ev_particles = event['particle_id'].values.tolist()
+    ev_particles.sort()
+    for particle in ev_particles:
+        if (particle in par_ids) == True:
+            particle_hits = sort_hits(particle)
+            x_10 = []
+            y_10 = []
+            z_10 = []
+            for i in particle_hits:
+                x_10.append(hits_['x'].values.tolist()[i])
+                y_10.append(hits_['y'].values.tolist()[i])
+                z_10.append(hits_['z'].values.tolist()[i])
+            ax.scatter(x_10,y_10,z_10, color=colours[par_ids.index(particle)])
+ax.set_title("First ten events")
+plt.xlabel("x")
+plt.ylabel("y")
+ax.set_zlabel("z")
+plt.show()
+
+"""
 
 """
 # Create the "Hits dataframe"
