@@ -230,8 +230,9 @@ for file in files:
 def layerGlobalIndex(volume,layer):
     return (volume-7)*(maxLayerId + 1) + layer
 """
+maxLayerId = 14
 def layerGlobalIndex(volume,layer):
-    return (volume-7)*(14 + 1) + layer
+    return (volume-7)*(maxLayerId + 1) + layer
 
 # Take all the hits and assign an index to each of them. Then write all of this in on a file
 
@@ -241,7 +242,26 @@ def layerGlobalIndex(volume,layer):
 
 fig = plt.figure()
 #ax = fig.add_subplot(111, projection='2d')
-
+ev = pd.read_csv(files[10])
+ev_hitid_col = ev['hit_id'].values.tolist()
+ev_lay_col = ev['layer_id'].values.tolist()
+ev_vol_col = ev['volume_id'].values.tolist()
+ev_x_col = ev['x'].values.tolist()
+ev_y_col = ev['y'].values.tolist()
+ev_z_col = ev['z'].values.tolist()
+length_= len(ev_lay_col)
+ 
+#for i in range(length_):
+for i in range(10000):
+    #radius_list.append(np.sqrt(ev_x_col[i]**2 + ev_y_col[i]**2))
+    #z_list.append(ev_z_col[i])
+    #index_list.append(layerGlobalIndex(ev_lay_col[i],ev_vol_col[i]))
+    radius_ = np.sqrt(ev_x_col[i]**2 + ev_y_col[i]**2)
+    z_value = ev_z_col[i]
+    index_value = layerGlobalIndex(ev_lay_col[i],ev_vol_col[i])
+    print(i)
+    plt.scatter(z_value,radius_, color=colours[index_value])
+"""
 for file in files:
     ev = pd.read_csv(file)
 
@@ -263,7 +283,7 @@ for file in files:
         index_value = layerGlobalIndex(ev_lay_col[i],ev_vol_col[i])
 
         plt.scatter(z_value,radius_, color=colours[index_value])
-
+"""
 #plt.scatter(z_list,radius_list_)
 #ax.legend()
 #ax.set_title("Hits on layer " + str(lay_) + " and volume " + str(vol_))
