@@ -15,10 +15,15 @@ import glob
 #Define the path to the csv files
 path = '/home/simonb/Documents/Courses/Thesis/'
 
-# Read the dataframes from the csv files
-hits_ = pd.read_csv(path+'train_3/event000004590-hits.csv')
-particles_ = pd.read_csv(path+'train_3/event000004590-particles.csv')
-truth_ = pd.read_csv(path+'train_3/event000004590-truth.csv')
+# Put the files into lists to read them
+hit_files = glob.glob(path+'train_3/event00000*-hits.csv')
+par_files = glob.glob(path+'train_3/event00000*-hits.csv')
+truth_files = glob.glob(path+'train_3/event00000*-hits.csv')
+
+# Read the dataframes from the first csv file
+hits_ = pd.read_csv(hit_files[0])
+particles_ = pd.read_csv(par_files[0])
+truth_ = pd.read_csv(truth_files[0])
 
 print('Hits')
 print(hits_)
@@ -35,17 +40,7 @@ x_col = hits_['x'].values.tolist()
 y_col = hits_['y'].values.tolist()
 z_col = hits_['z'].values.tolist()
 
-# Define a list of colours for the different tracks
-colours = ['black','dimgrey','gray','darkgray','silver','lightgray','gainsboro','whitesmoke',
-'rosybrown','lightcoral','indianred','brown','firebrick','maroon','darkred','red','mistyrose',
-'salmon','tomato','darksalmon','coral','orangered','lightsalmon','sienna','seashell','chocolate',
-'saddlebrown','sandybrown','peachpuff','peru','linen','bisque','darkorange','burlywood','tan',
-'navajowhite','blanchedalmond''papayawhip','moccasin','orange','wheat','darkgoldenrod','goldenrod',
-'cornsilk','gold','lemonchiffon','khaki','palegoldenrod','darkkhaki','beige','olive','yellow',
-'olivedrab','yellowgreen','darkolivegreen','greenyellow','lawngreen','darkseagreen','palegreen',
-'forestgreen','darkgreen','lime','springgreen','mediumspringgreen','mediumaquamarine','aquamarine',
-'turquoise','lightseagreen','paleturquoise','darkslategray','teal','aqua','darkturquoise','cadetblue',
-'powderblue','deepskyblue','steelblue']
+# Define the functions returning the indexes
 
 def hit_index(hit_id):                              # Define a function that takes an hit_id 
     hits_list = hits_['hit_id'].values.tolist()     # and returns the index in the column series
@@ -110,30 +105,11 @@ for i in par_hits:
     ax.scatter(z_,x_,y_, color=colours[colour_index], label=str(par_ids[colour_index]))
     colour_index += 1
 
-#ax.legend()
 ax.set_title("Visualization of the first 5 particles")
 plt.xlabel("z")
 plt.ylabel("x")
 ax.set_zlabel("y")
 plt.show()
-
-# Read the dataframes from the first 10 events
-hits_ten_events = []
-particles_ten_events = []
-cells_ten_events = []
-truth_ten_events = []
-
-for i in range(10):
-    name_h = path+'train_3/event00000459' + str(i) +'-hits.csv'
-    name_p = path+'train_3/event00000459' + str(i) +'-particles.csv'
-    name_c = path+'train_3/event00000459' + str(i) +'-cells.csv'
-    name_t = path+'train_3/event00000459' + str(i) +'-truth.csv'
-
-    hits_ten_events.append(pd.read_csv(name_h))     # Lists of DataFrames
-    particles_ten_events.append(pd.read_csv(name_p))
-    cells_ten_events.append(pd.read_csv(name_c))
-    truth_ten_events.append(pd.read_csv(name_t))
-
 
 # Group hits by volume and layer, then visualize them
 volumes_ = list(set(volumes_col))      #Removes all the duplicates from the list
@@ -149,6 +125,7 @@ def sort_volume(volume):
 vol_dict = {}
 for vol in volumes_:
     vol_dict[str(vol)] = sort_volume(vol)
+
 def sort_layer(vol_,lay_):
     index_list = []
 
@@ -181,28 +158,12 @@ def vis_same_layer(vol_,lay_):
 vis_same_layer(7,2)
 
 # Define the function that introduces the new index for the detector layers
-
-maxLayerId = 0
-maxVolumeId = 0
-
-files = glob.glob(path+'train_3/event00000*-hits.csv')
-"""
-for file in files:
-    ev = pd.read_csv(file)
-    ev_lay_col = ev['layer_id'].values.tolist()
-    ev_vol_col = ev['volume_id'].values.tolist()
-    length_= len(ev_lay_col)
-
-    for i in range(length_):
-        maxLayerId = max(maxLayerId, ev_lay_col[i])
-        maxVolumeId = max(maxVolumeId, ev_vol_col[i])
-#print(maxLayerId)      it returns 14 
-"""
 maxLayerId = 14
+
 def layerGlobalIndex(volume,layer):
     return (volume-7)*(maxLayerId + 1) + layer
-# Take all the hits and assign an index to each of them. Then write all of this in on a file
 
+# Take all the hits and assign an index to each of them. Then write all of this in on a file
 fig = plt.figure()
 ev = pd.read_csv(files[10])
 ev_hitid_col = ev['hit_id'].values.tolist()
@@ -218,12 +179,10 @@ z = []
 index = []
 
 for i in range(length_):
-    if (i%20) == 0:
+    if (i%10) == 0:
         radius.append(np.sqrt(ev_x_col[i]**2 + ev_y_col[i]**2))
         z.append(ev_z_col[i])
         index.append(layerGlobalIndex(ev_vol_col[i],ev_lay_col[i]))
-        #plt.scatter(z_value,radius_, c=index_value)
-        #cm = plt.cm.get_cmap('rainbow')
 
 cm = plt.cm.get_cmap('nipy_spectral')    
 plt.scatter(z,radius, c = index, cmap = cm)
@@ -243,10 +202,6 @@ def write_to_dat(vol_,lay_):
         + str(hits_['z'].values.tolist()[index_]) + '\t' + str(index(vol_,lay_)) +'\n')
     open_file.close()
 
-"""
-for comb in list__:
-    write_to_dat(comb[0],comb[1])
-"""
 
 def write_to_csv(vol_,lay_):
     open_file = open('test.csv', 'a')
@@ -282,15 +237,6 @@ plt.ylabel("y")
 ax.set_zlabel("z")
 plt.show()
 
-"""
-
-"""
-# Create the "Hits dataframe"
-hits_df = hits_.loc[:,['hit_id', 'x', 'y', 'z']]
-
-# Create the "Particle dataframe"
-par_df = pd.concat([particles_['particle_id'],
-    particles_['px'],particles_['py'],particles_['pz']],axis=1)
 """
 """
     # Solution 1
