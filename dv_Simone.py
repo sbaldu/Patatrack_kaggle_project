@@ -13,12 +13,12 @@ from mpl_toolkits.mplot3d import Axes3D
 import glob
 
 #Define the path to the csv files
-path = '/home/simonb/Documents/Courses/Thesis/'
+path = '/home/simonb/Documents/Thesis/'
 
 # Put the files into lists to read them
 hit_files = glob.glob(path+'train_3/event00000*-hits.csv')
-par_files = glob.glob(path+'train_3/event00000*-hits.csv')
-truth_files = glob.glob(path+'train_3/event00000*-hits.csv')
+par_files = glob.glob(path+'train_3/event00000*-particles.csv')
+truth_files = glob.glob(path+'train_3/event00000*-truth.csv')
 
 # Read the dataframes from the first csv file
 hits_ = pd.read_csv(hit_files[0])
@@ -42,8 +42,8 @@ z_col = hits_['z'].values.tolist()
 
 # Define the functions returning the indexes
 
-def hit_index(hit_id):                              # Define a function that takes an hit_id 
-    hits_list = hits_['hit_id'].values.tolist()     # and returns the index in the column series
+def hit_index(hit_id):                              # Define a function that takes an hit_id and returns the index in the column series
+    hits_list = hits_['hit_id'].values.tolist()     
     index = hits_list.index(hit_id)
     return index
 
@@ -102,7 +102,7 @@ for i in par_hits:
         x_.append(hits_['x'][hit_index(j)])
         y_.append(hits_['y'][hit_index(j)])
         z_.append(hits_['z'][hit_index(j)])
-    ax.scatter(z_,x_,y_, color=colours[colour_index], label=str(par_ids[colour_index]))
+    ax.scatter(z_,x_,y_, c=[colour_index for i in range(len(x_))], label=str(par_ids[colour_index]))      # Remember to add the colour
     colour_index += 1
 
 ax.set_title("Visualization of the first 5 particles")
@@ -165,7 +165,7 @@ def layerGlobalIndex(volume,layer):
 
 # Take all the hits and assign an index to each of them. Then write all of this in on a file
 fig = plt.figure()
-ev = pd.read_csv(files[10])
+ev = pd.read_csv(hit_files[10])
 ev_hitid_col = ev['hit_id'].values.tolist()
 ev_lay_col = ev['layer_id'].values.tolist()
 ev_vol_col = ev['volume_id'].values.tolist()
@@ -184,35 +184,60 @@ for i in range(length_):
         z.append(ev_z_col[i])
         index.append(layerGlobalIndex(ev_vol_col[i],ev_lay_col[i]))
 
-cm = plt.cm.get_cmap('nipy_spectral')    
+cm = plt.cm.get_cmap('nipy_spectral')
 plt.scatter(z,radius, c = index, cmap = cm)
 plt.xlabel("z (mm)")
 plt.ylabel("r (mm)")
 plt.show()
 
-
 # Write hits per layer on a .dat file, so that ROOT can read it
-def write_to_dat(vol_,lay_):
-    open_file = open('test.dat', 'a')
-    index_list = sort_layer(vol_,lay_)
+def write_to_dat(event_):       # event_ should be the path to the file written as a string. The files list should be used for convenience
+    event = pd.read_csv(event_)
+    
+    # Define a unique name for the file
+    event_ = event_.split(sep='/')
+    name = event_[6]
+    name = name.split(sep='.')
+    open_file = open(name[0] + '.dat', 'a')
+    
+    #hitid_col = event['hit_id'].values.tolist()
+    lay_col = event['layer_id'].values.tolist()
+    vol_col = event['volume_id'].values.tolist()
+    x_col = event['x'].values.tolist()
+    y_col = event['y'].values.tolist()
+    z_col = event['z'].values.tolist()
+    length= len(lay_col)
 
-    for index_ in index_list:
-        open_file.write(str(hits_['x'].values.tolist()[index_]) + '\t' 
-        + str(hits_['y'].values.tolist()[index_]) + '\t' 
-        + str(hits_['z'].values.tolist()[index_]) + '\t' + str(index(vol_,lay_)) +'\n')
+    for i in range(length):
+        open_file.write(str(x_col[i]) + '\t' + str(y_col[i]) + '\t' 
+        + str(z_col[i]) + '\t' + str(layerGlobalIndex(vol_col[i],lay_col[i])) + '\n')
     open_file.close()
+#write_to_dat(hit_files[10])
 
+def write_to_csv(event_):       # Same thing but it writes the data to a csv file
+    event = pd.read_csv(event_)
+    
+    # Define a unique name for the file
+    event_ = event_.split(sep='/')
+    name = event_[6]
+    name = name.split(sep='.')
+    open_file = open(name[0] + '.csv', 'a')
+    
+    #hitid_col = event['hit_id'].values.tolist()
+    lay_col = event['layer_id'].values.tolist()
+    vol_col = event['volume_id'].values.tolist()
+    x_col = event['x'].values.tolist()
+    y_col = event['y'].values.tolist()
+    z_col = event['z'].values.tolist()
+    length= len(lay_col)
 
-def write_to_csv(vol_,lay_):
-    open_file = open('test.csv', 'a')
-    index_list = sort_layer(vol_,lay_)
-
-    open_file.write('x,y,z')
-    for index_ in index_list:
-        open_file.write(str(hits_['x'].values.tolist()[index_]) + ',' 
-        + str(hits_['y'].values.tolist()[index_]) + ',' 
-        + str(hits_['z'].values.tolist()[index_]) + '\n')
+    open_file.write('x,y,z,globalIndex' + '\n')
+    for i in range(length):
+        open_file.write(str(x_col[i]) + ',' + str(y_col[i]) + ',' 
+        + str(z_col[i]) + ',' + str(layerGlobalIndex(vol_col[i],lay_col[i])) + '\n')
     open_file.close()
+write_to_csv(hit_files[10])
+
 """
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
@@ -236,54 +261,4 @@ plt.xlabel("x")
 plt.ylabel("y")
 ax.set_zlabel("z")
 plt.show()
-
-"""
-"""
-    # Solution 1
-def max_layer(volume):
-    if (volume in volumes_col) == False:
-        return 0
-    else:
-        indexes = sort_volume(volume)
-        layers_ = []
-
-        for index in indexes:
-            layers_.append(layer_col[index])
-        max_ = max(layers_)
-        return max_
-def index(vol_,lay_):
-    index_ = 0
-    for i in range(vol_):
-        index_ += max_layer(i)
-    index_ += lay_
-    return index_
-
-    # Solution 2
-length = len(layer_col)
-list_ = []
-    
-for i in range(length):
-    list_.append(volumes_col[i] + layer_col[i]/100)
-list_ = list(set(list_))
-list_.sort()
-list__ = []
-for element in list_:
-    element = str(element)
-    split_ = element.split(sep='.')
-    if len(split_[1]) == 1:
-        list__.append([int(split_[0]),int(split_[1])*10])
-    else:
-        list__.append([int(split_[0]),int(split_[1])])
-
-def indexing(v_,l_):
-    index = 0
-    
-    
-    for i in range(len(list__)):
-        if list__[i]==[v_,l_]:
-            break
-        if list__[i]!=[v_,l_]:
-            index += 1
-
-    return index
 """
