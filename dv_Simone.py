@@ -256,11 +256,29 @@ new_df = new_df.sort_values(by='r',ascending=True)
 # I want to get the list of all the r for the same particle
 par_id = 0
 r_list = []
+z_list = []
+index_list = []
 ids = list(set(new_df['particle_id'].values.tolist()))
+r_series = []
+z_series = []
+index_series = []
 
-for i in range(1000):
+for i in range(10000):
     if new_df['particle_id'].values.tolist()[i] == par_id:
-        r_list.append(new_df['r'].values.tolist()[i])
+        r_series.append(new_df['r'].values.tolist()[i])
+        z_series.append(new_df['z'].values.tolist()[i])
+        index_series.append(new_df['globalIndex'].values.tolist()[i])
+
+r_series = pd.Series(r_series)
+z_series = pd.Series(z_series)
+index_series = pd.Series(index_series)
+
+par_df = pd.concat([r_series,z_series,index_series],axis=1)
+par_df = par_df.rename(columns={0:'r'})
+par_df = par_df.rename(columns={1:'z'})
+par_df = par_df.rename(columns={2:'globalIndex'})
+
+print(par_df)
 
 """
 fig = plt.figure()
