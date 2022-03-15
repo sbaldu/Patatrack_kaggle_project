@@ -13,7 +13,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import glob
 
 #Define the path to the csv files
-path = '/home/simonb/Documents/Thesis/'
+path = '/home/simonb/documents/thesis/'
 
 # Put the files into lists to read them
 hit_files = glob.glob(path+'train_3/event00000*-hits.csv')
@@ -41,7 +41,6 @@ y_col = hits_['y'].values.tolist()
 z_col = hits_['z'].values.tolist()
 
 # Define the functions returning the indexes
-
 def hit_index(hit_id):                              # Define a function that takes an hit_id and returns the index in the column series
     hits_list = hits_['hit_id'].values.tolist()     
     index = hits_list.index(hit_id)
@@ -161,34 +160,36 @@ vis_same_layer(7,2)
 maxLayerId = 14
 
 def layerGlobalIndex(volume,layer):
-    return (volume-7)*(maxLayerId + 1) + layer
+    return (volume-7)*(maxLayerId + 1) + (layer-2)
 
 # Take all the hits and assign an index to each of them. Then write all of this in on a file
+
 fig = plt.figure()
-ev = pd.read_csv(hit_files[10])
-ev_hitid_col = ev['hit_id'].values.tolist()
-ev_lay_col = ev['layer_id'].values.tolist()
-ev_vol_col = ev['volume_id'].values.tolist()
-ev_x_col = ev['x'].values.tolist()
-ev_y_col = ev['y'].values.tolist()
-ev_z_col = ev['z'].values.tolist()
-length_= len(ev_lay_col)
- 
 radius = []
 z = []
 index = []
+for i in range(10):
+    ev = pd.read_csv(hit_files[i])
+    ev_hitid_col = ev['hit_id'].values.tolist()
+    ev_lay_col = ev['layer_id'].values.tolist()
+    ev_vol_col = ev['volume_id'].values.tolist()
+    ev_x_col = ev['x'].values.tolist()
+    ev_y_col = ev['y'].values.tolist()
+    ev_z_col = ev['z'].values.tolist()
+    length_= len(ev_lay_col)    
 
-for i in range(length_):
-    if (i%10) == 0:
-        radius.append(np.sqrt(ev_x_col[i]**2 + ev_y_col[i]**2))
-        z.append(ev_z_col[i])
-        index.append(layerGlobalIndex(ev_vol_col[i],ev_lay_col[i]))
+    for i in range(length_):
+        if (i%1) == 0:
+            radius.append(np.sqrt(ev_x_col[i]**2 + ev_y_col[i]**2))
+            z.append(ev_z_col[i])
+            index.append(layerGlobalIndex(ev_vol_col[i],ev_lay_col[i]))
 
 cm = plt.cm.get_cmap('nipy_spectral')
 plt.scatter(z,radius, c = index, cmap = cm)
 plt.xlabel("z (mm)")
 plt.ylabel("r (mm)")
-plt.show()
+#plt.show()
+
 
 # Write hits per layer on a .dat file, so that ROOT can read it
 def write_to_dat(event_):       # event_ should be the path to the file written as a string. The files list should be used for convenience
@@ -198,7 +199,7 @@ def write_to_dat(event_):       # event_ should be the path to the file written 
     event_ = event_.split(sep='/')
     name = event_[6]
     name = name.split(sep='.')
-    open_file = open(name[0] + '.dat', 'a')
+    open_file = open(name[0] + '.dat', 'w')
     
     #hitid_col = event['hit_id'].values.tolist()
     lay_col = event['layer_id'].values.tolist()
@@ -207,12 +208,13 @@ def write_to_dat(event_):       # event_ should be the path to the file written 
     y_col = event['y'].values.tolist()
     z_col = event['z'].values.tolist()
     length= len(lay_col)
-
+    list_ = []
     for i in range(length):
-        open_file.write(str(x_col[i]) + '\t' + str(y_col[i]) + '\t' 
-        + str(z_col[i]) + '\t' + str(layerGlobalIndex(vol_col[i],lay_col[i])) + '\n')
+        list_.append(layerGlobalIndex(vol_col[i],lay_col[i]))
+        open_file.write(str(layerGlobalIndex(vol_col[i],lay_col[i])) + '\n')
+    print(list(set(list_)))
     open_file.close()
-#write_to_dat(hit_files[10])
+write_to_dat(hit_files[10])
 
 def write_to_csv(event_):       # Same thing but it writes the data to a csv file
     event = pd.read_csv(event_)
@@ -236,7 +238,29 @@ def write_to_csv(event_):       # Same thing but it writes the data to a csv fil
         open_file.write(str(x_col[i]) + ',' + str(y_col[i]) + ',' 
         + str(z_col[i]) + ',' + str(layerGlobalIndex(vol_col[i],lay_col[i])) + '\n')
     open_file.close()
-write_to_csv(hit_files[10])
+#write_to_csv(hit_files[10])
+
+#Define df containing particle_ids, hit positions and vol/lay ids
+i = 2       # Right now I'm only doing it for one event. I'll add all the others later
+hit_df = pd.read_csv(hit_files[i])
+truth_df = pd.read_csv(truth_files[i])
+new_df = pd.concat([truth_df['particle_id'],np.sqrt(hit_df['x']**2 + hit_df['y']**2)
+    ,hit_df['z'],layerGlobalIndex(hit_df['volume_id'],hit_df['layer_id'])],axis=1)
+
+new_df = new_df.rename(columns={0:'r'})
+new_df = new_df.rename(columns={1:'globalIndex'})
+new_df = new_df.sort_values(by='r',ascending=True)
+
+#print(new_df)
+
+# I want to get the list of all the r for the same particle
+par_id = 0
+r_list = []
+ids = list(set(new_df['particle_id'].values.tolist()))
+
+for i in range(1000):
+    if new_df['particle_id'].values.tolist()[i] == par_id:
+        r_list.append(new_df['r'].values.tolist()[i])
 
 """
 fig = plt.figure()
@@ -261,4 +285,8 @@ plt.xlabel("x")
 plt.ylabel("y")
 ax.set_zlabel("z")
 plt.show()
+"""
+"""
+str(x_col[i]) + '\t' + str(y_col[i]) + '\t' 
+        + str(z_col[i]) + '\t' + 
 """
