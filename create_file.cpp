@@ -1,10 +1,29 @@
-#include "TTree.h"
-#include "TCanvas.h"
-#include "TH1F.h"
+#include <iostream>
+#include <fstream>
+#include <vector>
 
 int main() {
-    TTree* t = new TTree("t", "Albero");
-    t->ReadFile("test.csv","x/D:y:z");
+    std::ifstream is;
+    is.open("indexes.dat");
+    std::vector<int> indexes;
+    int a;
 
-    t->Draw("x:y:z");
+    for(int i = 0; is >> a; ++i) {
+        indexes.push_back(a);
+    }
+
+    is.close();
+    int size_ = indexes.size();
+    std::vector<std::vector<int>> pairs;
+
+    for(int i = 0; i < size_-1; ++i) {
+        if(indexes[i] != indexes[i+1]) {
+            pairs.push_back({indexes[i],indexes[i+1]});
+        }
+    }
+
+    int n_pairs = pairs.size();
+    for(int i; i < n_pairs; ++i) {
+        std::cout << '[' << pairs[i][0] << ',' << pairs[i][1] << ']' << '\n';
+    }
 }
