@@ -22,7 +22,7 @@ truth_files.sort()
 
 maxLayerId = 14
 def layerGlobalIndex(volume,layer):
-    return (volume-7)*(maxLayerId + 1) + (layer)
+    return volume*(maxLayerId + 1) + layer
 
 def plotPair(r_pair_,z_pair_):
     fig = plt.figure()
@@ -86,37 +86,37 @@ for i in range(int(n_particles/191)):
     #print(indexes)
     
     #hits_globalindexes = []
-    #r_ = []
-    #z_ = []
+    r_ = []
+    z_ = []
     pairs_ = []
-    #r_pair  =[]
-    #z_pair = []
+    r_pair  =[]
+    z_pair = []
     for index in par_hit_indexes:
         #print(total_df['r'][index])
         if (index != par_hit_indexes[len(par_hit_indexes)-1]) and (total_df['globalIndex'][index] != total_df['globalIndex'][par_hit_indexes[par_hit_indexes.index(index)+1]]):
-            #r_.append(total_df['r'][index])
-            #z_.append(total_df['z'][index])
+            r_.append(total_df['r'][index])
+            z_.append(total_df['z'][index])
             #hits_globalindexes.append(total_df['globalIndex'][index])
             pairs_.append([total_df['globalIndex'][index],total_df['globalIndex'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
-            #r_pair.append([total_df['r'][index],total_df['r'][indexes[indexes.index(index)+1]]])
-            #z_pair.append([total_df['z'][index],total_df['z'][indexes[indexes.index(index)+1]]])
+            r_pair.append([total_df['r'][index],total_df['r'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
+            z_pair.append([total_df['z'][index],total_df['z'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
 
     #print(hits_globalindexes)
     #print(r_)
     #print(z_)
     #print(pairs_)
-    #for i in range(len(pairs_)):
-    #    plotPair(r_pair[i],z_pair[i])
-    """
+    
     fig = plt.figure()
     plt.scatter(z_,r_)
     plt.xlabel("z (mm)")
     plt.ylabel("r (mm)")
     plt.xlim(-3000,3000)
     plt.ylim(0,1000)
-    plt.show()  
-    """
+    plt.show() 
 
+    for i in range(len(pairs_)):
+        plotPair(r_pair[i],z_pair[i])
+    
     # Now I want to take all the doublets created for this particle and assign to each one a pair-index
     pair_indexes = []
     for pair in pairs_:
