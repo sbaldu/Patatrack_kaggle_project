@@ -45,9 +45,9 @@ for i in range(2):
 
 def plotPair(r_pair_,z_pair_):
     fig = plt.figure()
-    plt.scatter([z_pair_[0],z_pair_[1]],[r_pair_[0],r_pair_[1]],marker='x',color='red')
     #cm = plt.cm.get_cmap('nipy_spectral')
     plt.scatter(z,radius)
+    plt.scatter([z_pair_[0],z_pair_[1]],[r_pair_[0],r_pair_[1]],marker='x',color='red')
     plt.xlabel("z (mm)")
     plt.ylabel("r (mm)")
     plt.xlim(-3000,3000)
@@ -102,7 +102,8 @@ def return_index(pair,pairs):
             return i
     return 'nope'
 
-for i in range(int(n_particles/191)):
+for i in range(int(n_particles)):
+    i += 4000
     par_hit_indexes = sort_hits(t_particle_types[i])
     #print(indexes)
     
