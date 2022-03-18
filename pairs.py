@@ -11,7 +11,7 @@ from matplotlib.ticker import PercentFormatter
 from mpl_toolkits.mplot3d import Axes3D
 import glob
 
-path = '/home/simonb/Documents/thesis/'
+path = '/home/simonb/documents/thesis/'
 
 hit_files = glob.glob(path+'train_3/event00000*-hits.csv')
 par_files = glob.glob(path+'train_3/event00000*-particles.csv')
@@ -46,8 +46,8 @@ for i in range(2):
 def plotPair(r_pair_,z_pair_):
     fig = plt.figure()
     #cm = plt.cm.get_cmap('nipy_spectral')
-    plt.scatter(z,radius)
-    plt.scatter([z_pair_[0],z_pair_[1]],[r_pair_[0],r_pair_[1]],marker='x',color='red')
+    plt.scatter(z,radius,color='#008080')
+    plt.scatter([z_pair_[0],z_pair_[1]],[r_pair_[0],r_pair_[1]],s=80,marker='X',color='red')
     plt.xlabel("z (mm)")
     plt.ylabel("r (mm)")
     plt.xlim(-3000,3000)

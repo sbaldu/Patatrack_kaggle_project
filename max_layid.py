@@ -1,7 +1,7 @@
 import glob
 import pandas as pd
 
-path = '/home/simonb/Documents/thesis/' 
+path = '/home/simonb/documents/thesis/' 
 hit_files = glob.glob(path+'train_3/event00000*-hits.csv')
 maxLayerId = 0
 maxVolumeId = 0
