@@ -59,12 +59,10 @@ particles_ = pd.read_csv(par_files[0])
 truth_ = pd.read_csv(truth_files[0])
 
 total_df = pd.concat([truth_['particle_id'],np.sqrt(hits_['x']**2 + hits_['y']**2),hits_['z'],layerGlobalIndex(hits_['volume_id'],hits_['layer_id'])],axis=1)
-print(total_df)
 total_df = total_df.rename(columns={0:'r'})
 total_df = total_df.rename(columns={1:'globalIndex'})
 total_df = total_df.sort_values(by='r',ascending=True)
 total_df = total_df.reset_index(drop=True)
-print(total_df)
 
 def sort_hits(particle_id):
     list_hits = []
@@ -102,6 +100,8 @@ def return_index(pair,pairs):
             return i
     return 'nope'
 
+list_pair_indexes = []
+
 for i in range(int(n_particles)):
     i += 4000
     par_hit_indexes = sort_hits(t_particle_types[i])
@@ -128,6 +128,7 @@ for i in range(int(n_particles)):
     #print(z_)
     #print(pairs_)
     
+    """
     fig = plt.figure()
     plt.scatter(z_,r_)
     plt.xlabel("z (mm)")
@@ -135,16 +136,23 @@ for i in range(int(n_particles)):
     plt.xlim(-3000,3000)
     plt.ylim(0,1000)
     plt.show() 
+    """
 
-    for i in range(len(pairs_)):
-        plotPair(r_pair[i],z_pair[i])
+    #for i in range(len(pairs_)):
+    #    plotPair(r_pair[i],z_pair[i])
     
     # Now I want to take all the doublets created for this particle and assign to each one a pair-index
     pair_indexes = []
     for pair in pairs_:
         pair_indexes.append(return_index(pair,pairs_combinations))
-    print(pair_indexes)
-
-    #dict_ = {}
-    #for pair_ind in pair_indexes:
-    #    dict_[pair_indexes] += 1
+    #print(pair_indexes)
+    list_pair_indexes += pair_indexes   
+    
+dict_ = {}
+for pair_ind in list_pair_indexes:
+    key_ = str(pair_ind)
+    if (key_ in dict_) == False:
+        dict_[str(pair_ind)] = 1
+    else:
+        dict_[str(pair_ind)] += 1
+print(dict_)
