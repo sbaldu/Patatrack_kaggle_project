@@ -11,7 +11,7 @@ from matplotlib.ticker import PercentFormatter
 from mpl_toolkits.mplot3d import Axes3D
 import glob
 
-path = '/home/simonb/documents/thesis/'
+path = '/home/simonb/Documents/thesis/'
 
 hit_files = glob.glob(path+'train_3/event00000*-hits.csv')
 par_files = glob.glob(path+'train_3/event00000*-particles.csv')
@@ -64,10 +64,11 @@ total_df = total_df.rename(columns={1:'globalIndex'})
 total_df = total_df.sort_values(by='r',ascending=True)
 total_df = total_df.reset_index(drop=True)
 
+total_df_size = total_df['particle_id'].size
 def sort_hits(particle_id):
     list_hits = []
 
-    for i in range(total_df['particle_id'].size):
+    for i in range(total_df_size):
         if total_df['particle_id'][i] == particle_id:
             list_hits.append(i)
             
@@ -102,27 +103,27 @@ def return_index(pair,pairs):
 
 list_pair_indexes = []
 
-for i in range(int(n_particles)):
-    i += 4000
-    par_hit_indexes = sort_hits(t_particle_types[i])
-    #print(indexes)
+for i in range(10):
+    
+    par_hit_indexes = sort_hits(t_particle_types[i])        # I think that this function is slowing down the program
+    #print(len(par_hit_indexes))
     
     #hits_globalindexes = []
-    r_ = []
-    z_ = []
+    #r_ = []
+    #z_ = []
     pairs_ = []
-    r_pair  =[]
-    z_pair = []
+    #r_pair  =[]
+    #z_pair = []
     for index in par_hit_indexes:
         #print(total_df['r'][index])
         if (index != par_hit_indexes[len(par_hit_indexes)-1]) and (total_df['globalIndex'][index] != total_df['globalIndex'][par_hit_indexes[par_hit_indexes.index(index)+1]]):
-            r_.append(total_df['r'][index])
-            z_.append(total_df['z'][index])
+            #r_.append(total_df['r'][index])
+            #z_.append(total_df['z'][index])
             #hits_globalindexes.append(total_df['globalIndex'][index])
             pairs_.append([total_df['globalIndex'][index],total_df['globalIndex'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
-            r_pair.append([total_df['r'][index],total_df['r'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
-            z_pair.append([total_df['z'][index],total_df['z'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
-
+            #r_pair.append([total_df['r'][index],total_df['r'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
+            #z_pair.append([total_df['z'][index],total_df['z'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
+    
     #print(hits_globalindexes)
     #print(r_)
     #print(z_)
@@ -149,10 +150,45 @@ for i in range(int(n_particles)):
     list_pair_indexes += pair_indexes   
     
 dict_ = {}
-for pair_ind in list_pair_indexes:
-    key_ = str(pair_ind)
-    if (key_ in dict_) == False:
-        dict_[str(pair_ind)] = 1
-    else:
-        dict_[str(pair_ind)] += 1
-print(dict_)
+#for pair_ind in list_pair_indexes:
+#    key_ = str(pair_ind)
+#    if (key_ in dict_) == False:
+#        dict_[str(pair_ind)] = 1
+#    else:
+#        dict_[str(pair_ind)] += 1
+#print(dict_)
+
+n_of_pairs = len(list_pair_indexes)
+#print(len(list_pair_indexes))
+open_file = open("doubletsIndexes.csv", 'w')
+    
+for i in range(n_of_pairs):
+    open_file.write(str(list_pair_indexes[i]) + '\n')
+open_file.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
