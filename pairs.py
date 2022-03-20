@@ -116,7 +116,7 @@ def return_index(pair,pairs):
 
 list_pair_indexes = []
 
-for i in range(int(n_particles/1000)):
+for i in range(n_particles):
     print(i)
     par_hit_indexes = sort_hits(t_particle_types[i])        # I think that this function is slowing down the program
     #print(len(par_hit_indexes))

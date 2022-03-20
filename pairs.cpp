@@ -52,6 +52,11 @@ void printVec(std::vector<int> vec) {
         std::cout << vec[i] << '\n';
     }
 }
+void printVec(std::vector<double> vec) {
+    for(int i = 0; i < vec.size(); ++i) {
+        std::cout << vec[i] << '\n';
+    }
+}
 
 int main() {
     // Read the par_hits.dat file
@@ -62,12 +67,11 @@ int main() {
 
     // Create the vector containing all the particle ids (particle_id column in the df)
     for(int i = 0; is >> a; ++i) {
-       particles_hits.push_back(a);
+        if(a != 0) {
+            particles_hits.push_back(a);
+        } 
     }
     is.close();
-    
-    std::cout << particles_hits[0] << '\n';
-    std::cout << sort_hits(612491885784596480,particles_hits)[0] << '\n';
 
     // Read the globalIndex.dat file
     std::ifstream is2;
@@ -81,39 +85,36 @@ int main() {
     }
     is2.close();
     
-    //printVec(globalIndexes);
     // Remove all duplicates from particle_hits
     std::vector<double> particle_types = particles_hits;
     std::sort( particle_types.begin(), particle_types.end() );
     particle_types.erase( std::unique( particle_types.begin(), particle_types.end() ), particle_types.end() );
-    //std::cout << particle_types.size() << '\n';
 
     // Loop over indexes and make doublets
     std::vector<int> indexes = globalIndexes;
     std::sort( indexes.begin(), indexes.end() );
     indexes.erase( std::unique( indexes.begin(), indexes.end() ), indexes.end() );
-    std::cout << indexes.size() << '\n';
-    //printVec(indexes);
 
     std::vector<std::vector<int>> pair_combinations = combine(indexes);
-    //for(int i = 0; i < pair_combinations.size(); ++i) {
-    //    std::cout << '[' << pair_combinations[i][0] << ',' << pair_combinations[i][1] << ']' << '\n';
-    //}
     std::vector<std::vector<int>> pairIndexes;
 
-    for(int i = 0; i < particle_types.size()-8976; ++i) {
-        std::vector<int> hits_global_indexes;
-        hits_global_indexes = sort_hits(particle_types[i],particles_hits);
-        printVec(hits_global_indexes);
+    for(int i = 0; i < particle_types.size(); ++i) {
+        //std::cout << i << '\n';
+        std::vector<int> par_hit_indices;
+        par_hit_indices = sort_hits(particle_types[i],particles_hits);
+        //printVec(par_hit_indices);
 
         std::vector<std::vector<int>> pairs_;
-        for(int j = 0; j < hits_global_indexes.size() - 1; ++j) {
-            if(hits_global_indexes[j] != hits_global_indexes[j+1]) {
-                pairs_.push_back({hits_global_indexes[j],hits_global_indexes[j+1]});
+        for(int j = 0; j < par_hit_indices.size() - 1; ++j) {
+            if(globalIndexes[j] != globalIndexes[j+1]) {
+                pairs_.push_back({globalIndexes[j],globalIndexes[j+1]});
             }
         }
+        for (int j = 0; j < pairs_.size(); ++j) {
+            std::cout << '[' << pairs_[j][0] << ',' << pairs_[j][1] << ']' << '\n';
+        }
     
-        // Give to each pair it's index
+        // Give to each pair its index
         std::vector<int> pair_indexes_;
         for(int j = 0; j < pairs_.size(); ++j) {
             pair_indexes_.push_back(return_index(pairs_[j],pair_combinations));
@@ -121,7 +122,14 @@ int main() {
         pairIndexes.push_back(pair_indexes_);
     }
 
+    std::ofstream outFile;
+    outFile.open("hist.csv");
+    outFile << "pairIndex" << '\n';
+
     for(int i = 0; i < pairIndexes.size(); ++i) {
-        //printVec(pairIndexes[i]);
+        for(int j = 0; j < pairIndexes[i].size(); ++j) {
+            outFile << pairIndexes[i][j] << '\n';
+        }
     }
+    outFile.close();
 }
