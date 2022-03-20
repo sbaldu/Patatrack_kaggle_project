@@ -1,3 +1,4 @@
+from urllib.request import parse_http_list
 from matplotlib.pyplot import eventplot
 from numpy import sort, triu_indices
 from operator import index, truth
@@ -11,7 +12,7 @@ from matplotlib.ticker import PercentFormatter
 from mpl_toolkits.mplot3d import Axes3D
 import glob
 
-path = '/home/simonb/Documents/thesis/'
+path = '/home/simonb/documents/thesis/'
 
 hit_files = glob.glob(path+'train_3/event00000*-hits.csv')
 par_files = glob.glob(path+'train_3/event00000*-particles.csv')
@@ -63,8 +64,20 @@ total_df = total_df.rename(columns={0:'r'})
 total_df = total_df.rename(columns={1:'globalIndex'})
 total_df = total_df.sort_values(by='r',ascending=True)
 total_df = total_df.reset_index(drop=True)
+print(total_df)
 
 total_df_size = total_df['particle_id'].size
+
+open_file = open("par_hits.dat", 'w')    
+for i in range(total_df_size):
+    open_file.write(str(total_df['particle_id'][i]) + '\n')
+open_file.close()
+
+open_file = open("globalIndexes.dat", 'w')    
+for i in range(total_df_size):
+    open_file.write(str(total_df['globalIndex'][i]) + '\n')
+open_file.close()
+
 def sort_hits(particle_id):
     list_hits = []
 
@@ -103,8 +116,8 @@ def return_index(pair,pairs):
 
 list_pair_indexes = []
 
-for i in range(10):
-    
+for i in range(int(n_particles/1000)):
+    print(i)
     par_hit_indexes = sort_hits(t_particle_types[i])        # I think that this function is slowing down the program
     #print(len(par_hit_indexes))
     
