@@ -39,8 +39,11 @@ int main() {
         globalIndexes.push_back(b);
     }
 
+    is2.close();
 
-
+    // Remove all duplicates from particle_hits
+    // Loop over indexes and make doublets
+    // Give to each pair it's index
     
     /*
     int size_ = indexes.size();
