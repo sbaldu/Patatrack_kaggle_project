@@ -67,9 +67,7 @@ int main() {
 
     // Create the vector containing all the particle ids (particle_id column in the df)
     for(int i = 0; is >> a; ++i) {
-        if(a != 0) {
-            particles_hits.push_back(a);
-        } 
+        particles_hits.push_back(a);
     }
     is.close();
 
@@ -92,7 +90,7 @@ int main() {
 
     // Loop over indexes and make doublets
     std::vector<int> indexes = globalIndexes;
-    std::sort( indexes.begin(), indexes.end() );
+    std::sort(indexes.begin(), indexes.end());
     indexes.erase( std::unique( indexes.begin(), indexes.end() ), indexes.end() );
 
     std::vector<std::vector<int>> pair_combinations = combine(indexes);
@@ -106,9 +104,9 @@ int main() {
 
         std::vector<std::vector<int>> pairs_;
         for(int j = 0; j < par_hit_indices.size() - 1; ++j) {
-            if(globalIndexes[j] != globalIndexes[j+1]) {
-                pairs_.push_back({globalIndexes[j],globalIndexes[j+1]});
-            }
+            //if(globalIndexes[j] != globalIndexes[j+1]) {
+            pairs_.push_back({globalIndexes[par_hit_indices[j]],globalIndexes[j+1]});
+            //}
         }
         for (int j = 0; j < pairs_.size(); ++j) {
             std::cout << '[' << pairs_[j][0] << ',' << pairs_[j][1] << ']' << '\n';

@@ -87,12 +87,16 @@ def sort_hits(particle_id):
             
     return list_hits
 
+#print(total_df['particle_id'].values.tolist())
+print(sort_hits(310749198922285056))
+
 # From the truth df I find all the particle ids
 t_particle_types = list(set(truth_['particle_id'].values.tolist()))
 n_particles = len(t_particle_types)     # 8977
 
 # I prepare che list of global indexes from the df to be used in Paula's code
 index_list = total_df['globalIndex'].values.tolist()
+print(index_list)
 index_list = np.unique(index_list) #remove duplicates
 
 # Paula's code, which I'm using to assing an index to the pairs
@@ -118,49 +122,50 @@ list_pair_indexes = []
 
 for i in range(n_particles):
     print(i)
-    par_hit_indexes = sort_hits(t_particle_types[i])        # I think that this function is slowing down the program
-    #print(len(par_hit_indexes))
+    if t_particle_types[i] != 0:
+        par_hit_indexes = sort_hits(t_particle_types[i])        # I think that this function is slowing down the program
+        print(t_particle_types[i])
     
-    #hits_globalindexes = []
-    #r_ = []
-    #z_ = []
-    pairs_ = []
-    #r_pair  =[]
-    #z_pair = []
-    for index in par_hit_indexes:
-        #print(total_df['r'][index])
-        if (index != par_hit_indexes[len(par_hit_indexes)-1]) and (total_df['globalIndex'][index] != total_df['globalIndex'][par_hit_indexes[par_hit_indexes.index(index)+1]]):
-            #r_.append(total_df['r'][index])
-            #z_.append(total_df['z'][index])
-            #hits_globalindexes.append(total_df['globalIndex'][index])
-            pairs_.append([total_df['globalIndex'][index],total_df['globalIndex'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
-            #r_pair.append([total_df['r'][index],total_df['r'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
-            #z_pair.append([total_df['z'][index],total_df['z'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
+        #hits_globalindexes = []
+        #r_ = []
+        #z_ = []
+        pairs_ = []
+        #r_pair  =[]
+        #z_pair = []
+        for index in par_hit_indexes:
+            #print(total_df['r'][index])
+            if (index != par_hit_indexes[len(par_hit_indexes)-1]) and (total_df['globalIndex'][index] != total_df['globalIndex'][par_hit_indexes[par_hit_indexes.index(index)+1]]):
+                #r_.append(total_df['r'][index])
+                #z_.append(total_df['z'][index])
+                #hits_globalindexes.append(total_df['globalIndex'][index])
+                pairs_.append([total_df['globalIndex'][index],total_df['globalIndex'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
+                #r_pair.append([total_df['r'][index],total_df['r'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
+                #z_pair.append([total_df['z'][index],total_df['z'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
     
-    #print(hits_globalindexes)
-    #print(r_)
-    #print(z_)
-    #print(pairs_)
+        #print(hits_globalindexes)
+        #print(r_)
+        #print(z_)
+        print(pairs_)
     
-    """
-    fig = plt.figure()
-    plt.scatter(z_,r_)
-    plt.xlabel("z (mm)")
-    plt.ylabel("r (mm)")
-    plt.xlim(-3000,3000)
-    plt.ylim(0,1000)
-    plt.show() 
-    """
+        """
+        fig = plt.figure()
+        plt.scatter(z_,r_)
+        plt.xlabel("z (mm)")
+        plt.ylabel("r (mm)")
+        plt.xlim(-3000,3000)
+        plt.ylim(0,1000)
+        plt.show() 
+        """
 
-    #for i in range(len(pairs_)):
-    #    plotPair(r_pair[i],z_pair[i])
+        #for i in range(len(pairs_)):
+        #    plotPair(r_pair[i],z_pair[i])
     
-    # Now I want to take all the doublets created for this particle and assign to each one a pair-index
-    pair_indexes = []
-    for pair in pairs_:
-        pair_indexes.append(return_index(pair,pairs_combinations))
-    #print(pair_indexes)
-    list_pair_indexes += pair_indexes   
+        # Now I want to take all the doublets created for this particle and assign to each one a pair-index
+        pair_indexes = []
+        for pair in pairs_:
+            pair_indexes.append(return_index(pair,pairs_combinations))
+        #print(pair_indexes)
+        list_pair_indexes += pair_indexes   
     
 dict_ = {}
 #for pair_ind in list_pair_indexes:
