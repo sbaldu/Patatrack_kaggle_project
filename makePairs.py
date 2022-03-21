@@ -94,6 +94,7 @@ for i in range(N):
     """
     for i in range(100):
         plotPair(r_pair[40000+i],z_pair[40000+i])
+        
 # I write the indexes list on a file to process the data in c++
 """
 open_file = open("indexes.dat", 'w')
@@ -101,4 +102,3 @@ open_file = open("indexes.dat", 'w')
 for i in range(df_length):
     open_file.write(str(indexes[i]) + '\n')
 open_file.close()
-"""
