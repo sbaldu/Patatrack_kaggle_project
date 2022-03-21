@@ -21,9 +21,10 @@ par_files = glob.glob(path+'train_3/event00000*-particles.csv')
 truth_files = glob.glob(path+'train_3/event00000*-truth.csv')
 
 # Read the dataframes from the first csv file
-hits_ = pd.read_csv(hit_files[0])
+#hits_ = pd.read_csv(hit_files[0])
+hits_ = pd.read_csv(path+'train_3/event000004591-hits.csv')
 particles_ = pd.read_csv(par_files[0])
-truth_ = pd.read_csv(truth_files[0])
+truth_ = pd.read_csv(path+'train_3/event000004591-truth.csv')
 
 print('Hits')
 print(hits_)
@@ -59,6 +60,7 @@ def sort_hits(particle_id):
             list_hits.append(truth_['hit_id'][i])
             
     return list_hits
+print(sort_hits(585476747651186688))
 def vis_particle(particle_id):
     x_hit_vis = []
     y_hit_vis = []
@@ -74,8 +76,9 @@ def vis_particle(particle_id):
     ax.scatter(z_hit_vis,x_hit_vis,y_hit_vis)
     plt.xlabel("z")
     plt.ylabel("x")
-    plt.set_zlabel("y")
+    ax.set_zlabel("y")
     plt.show()
+vis_particle(585476747651186688)
 
 # Compute the trasverse momentum with the particle file
 p_trasv = pd.concat([np.sqrt(particles_['px']**2 + particles_['py']**2)],axis=1)
@@ -208,11 +211,9 @@ def write_to_dat(event_):       # event_ should be the path to the file written 
     y_col = event['y'].values.tolist()
     z_col = event['z'].values.tolist()
     length= len(lay_col)
-    list_ = []
+    
     for i in range(length):
-        list_.append(layerGlobalIndex(vol_col[i],lay_col[i]))
         open_file.write(str(layerGlobalIndex(vol_col[i],lay_col[i])) + '\n')
-    print(list(set(list_)))
     open_file.close()
 write_to_dat(hit_files[10])
 
