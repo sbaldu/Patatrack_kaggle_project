@@ -98,26 +98,29 @@ int main() {
 
     for(int i = 0; i < particle_types.size(); ++i) {
         //std::cout << i << '\n';
-        std::vector<int> par_hit_indices;
-        par_hit_indices = sort_hits(particle_types[i],particles_hits);
-        //printVec(par_hit_indices);
+        if(particle_types[i] != 0 ) {
+            std::vector<int> par_hit_indices;
+            par_hit_indices = sort_hits(particle_types[i],particles_hits);
+            //printVec(par_hit_indices);
 
-        std::vector<std::vector<int>> pairs_;
-        for(int j = 0; j < par_hit_indices.size() - 1; ++j) {
-            //if(globalIndexes[j] != globalIndexes[j+1]) {
-            pairs_.push_back({globalIndexes[par_hit_indices[j]],globalIndexes[j+1]});
-            //}
-        }
-        for (int j = 0; j < pairs_.size(); ++j) {
-            std::cout << '[' << pairs_[j][0] << ',' << pairs_[j][1] << ']' << '\n';
-        }
+            std::vector<std::vector<int>> pairs_;
+            for(int j = 0; j < par_hit_indices.size() - 1; ++j) {
+                if(globalIndexes[par_hit_indices[j]] != globalIndexes[par_hit_indices[j+1]]) {
+                pairs_.push_back({globalIndexes[par_hit_indices[j]],globalIndexes[par_hit_indices[j+1]]});
+                }
+            }
+            for (int j = 0; j < pairs_.size(); ++j) {
+                std::cout << '[' << pairs_[j][0] << ',' << pairs_[j][1] << ']' << '\n';
+            }
     
-        // Give to each pair its index
-        std::vector<int> pair_indexes_;
-        for(int j = 0; j < pairs_.size(); ++j) {
-            pair_indexes_.push_back(return_index(pairs_[j],pair_combinations));
+            // Give to each pair its index
+            std::vector<int> pair_indexes_;
+            for(int j = 0; j < pairs_.size(); ++j) {
+                pair_indexes_.push_back(return_index(pairs_[j],pair_combinations));
+            }
+            pairIndexes.push_back(pair_indexes_);
         }
-        pairIndexes.push_back(pair_indexes_);
+        
     }
 
     std::ofstream outFile;
