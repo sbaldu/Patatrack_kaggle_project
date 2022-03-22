@@ -13,7 +13,7 @@ from matplotlib.ticker import PercentFormatter
 from mpl_toolkits.mplot3d import Axes3D
 import glob
 
-path = '/home/simonb/documents/thesis/'
+path = '/home/simonb/Documents/thesis/'
 
 # We define a map for the indexes
 index_map = {}
@@ -130,10 +130,9 @@ for i in range(len(hit_files)):
     total_df_size = total_df_['particle_id'].size
 
     for i in range(total_df_size):
-        open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
-   
-    for i in range(total_df_size):
-        open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
+        if total_df_['particle_id'][i] != 0:
+            open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
+            open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
         
 open_hit_file.close()
 open_truth_file.close()    
