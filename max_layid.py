@@ -15,4 +15,5 @@ for file in hit_files:
     for i in range(length_):
         maxLayerId = max(maxLayerId, ev_lay_col[i]/2 - 1)
         maxVolumeId = max(maxVolumeId, ev_vol_col[i] - 7)
+
 print(maxLayerId)
