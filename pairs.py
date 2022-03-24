@@ -111,7 +111,7 @@ def plotPair(r_pair_,z_pair_):
 
 open_hit_file = open("par_hits.dat", 'w')
 open_truth_file = open("globalIndexes.dat", 'w') 
-for i in range(len(hit_files)):
+for i in range(20):
     hit_df = pd.read_csv(hit_files[i])
     truth_df = pd.read_csv(truth_files[i])
     layer_ids = hit_df['layer_id'].values.tolist()
@@ -158,7 +158,7 @@ total_df = total_df.rename(columns={1:'globalIndex'})
 print(total_df)
 
 total_df_size = total_df['particle_id'].size
-
+"""
 open_file = open("par_hits.dat", 'w')    
 for i in range(total_df_size):
     open_file.write(str(total_df['particle_id'][i]) + '\n')
@@ -168,7 +168,7 @@ open_file = open("globalIndexes.dat", 'w')
 for i in range(total_df_size):
     open_file.write(str(total_df['globalIndex'][i]) + '\n')
 open_file.close()
-
+"""
 def sort_hits(particle_id):
     list_hits = []
 
