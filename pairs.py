@@ -13,7 +13,7 @@ from matplotlib.ticker import PercentFormatter
 from mpl_toolkits.mplot3d import Axes3D
 import glob
 
-path = '/home/simonb/documents/thesis/'
+path = '/home/simonb/Documents/thesis/'
 
 # We define a map for the indexes
 index_map = {}
@@ -107,9 +107,42 @@ def plotPair(r_pair_,z_pair_):
     plt.ylim(0,1000)
     plt.show() 
 
+open_hit_file = open("test_par_hits.dat", 'w')
+open_truth_file = open("test_globalIndexes.dat", 'w') 
+    
+hit_df = pd.read_csv(hit_files[0])
+truth_df = pd.read_csv(truth_files[0])
+layer_ids = hit_df['layer_id'].values.tolist()
+volume_ids = hit_df['volume_id'].values.tolist()
+df_size = len(layer_ids)
+indexes_list_ = []
+
+for row in range(df_size):
+    indexes_list_.append(index_map[(volume_ids[row],layer_ids[row])])
+globalIndexes = pd.Series(indexes_list_)
+
+total_df_ = pd.concat([truth_df['particle_id'],np.sqrt(hit_df['x']**2 + hit_df['y']**2),hit_df['z'],globalIndexes],axis=1)
+total_df_ = total_df_.rename(columns={0:'r'})
+total_df_ = total_df_.rename(columns={1:'globalIndex'})
+total_df_ = total_df_.sort_values(by='particle_id',ascending=True)
+print(total_df_)
+
+total_df_size = total_df_['particle_id'].size
+
+for i in range(total_df_size):
+    total_df_ = total_df_.sort_values(by='particle_id',ascending=True)
+    if total_df_['particle_id'][i] != 0:
+        print(total_df_['particle_id'][i]) 
+        open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
+        open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
+    
+open_hit_file.close()
+open_truth_file.close() 
+
+"""
 for i in range(2000):
-    open_hit_file = open(path + "train_3/par_hits" + str(i) + ".dat", 'w')
-    open_truth_file = open(path + "train_3/globalIndexes" + str(i) + ".dat", 'w') 
+    open_hit_file = open(path + "doublet_files/par_hits" + str(i) + ".dat", 'w')
+    open_truth_file = open(path + "doublet_files/globalIndexes" + str(i) + ".dat", 'w') 
     
     hit_df = pd.read_csv(hit_files[i])
     truth_df = pd.read_csv(truth_files[i])
@@ -135,7 +168,7 @@ for i in range(2000):
     
     open_hit_file.close()
     open_truth_file.close()    
-
+"""
 hits_ = pd.read_csv(hit_files[0])
 particles_ = pd.read_csv(par_files[0])
 truth_ = pd.read_csv(truth_files[0])

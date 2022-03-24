@@ -5,7 +5,7 @@
 #include <set>
 #include <string>
 
-std::vector<int> sort_hits(double &particle_id, std::vector<double> &par_hits_) {
+std::vector<int> sort_hits(double const &particle_id, std::vector<double> &par_hits_) {
     std::vector<int> result;
 
     for(int i = 0; i < par_hits_.size(); ++i) {
@@ -20,7 +20,7 @@ std::vector<int> sort_hits(double &particle_id, std::vector<double> &par_hits_) 
     return result;
 }
 
-bool is_in_vec(int &input_, std::vector<int> &vec_) {
+bool is_in_vec(int &input_, std::vector<int> const &vec_) {
     for (int i = 0; i < vec_.size(); ++i) {
         if(vec_[i] == input_) {
             return true;
@@ -30,7 +30,7 @@ bool is_in_vec(int &input_, std::vector<int> &vec_) {
     return false;
 }
 
-std::vector<std::vector<int>> combine(std::vector<int> &indexes) {
+std::vector<std::vector<int>> combine(std::vector<int> const &indexes) {
     std::vector<std::vector<int>> pairs;
 
     for(int i = 0; i < indexes.size(); ++i) {
@@ -41,7 +41,7 @@ std::vector<std::vector<int>> combine(std::vector<int> &indexes) {
     return pairs;
 }
 
-int return_index(std::vector<int> &pair, std::vector<std::vector<int>> &pairs) {
+int return_index(std::vector<int> const &pair, std::vector<std::vector<int>> const &pairs) {
     std::vector<int> inv_pair{pair[1],pair[0]};
     for(int i = 0; i < pairs.size(); ++i) {
         if((pair == pairs[i]) || (inv_pair == pairs[i])) {
@@ -51,12 +51,12 @@ int return_index(std::vector<int> &pair, std::vector<std::vector<int>> &pairs) {
     return 12345;
 }
 
-void printVec(std::vector<int> &vec) {
+void printVec(std::vector<int> const &vec) {
     for(int i = 0; i < vec.size(); ++i) {
         std::cout << vec[i] << '\n';
     }
 }
-void printVec(std::vector<double> &vec) {
+void printVec(std::vector<double> const &vec) {
     for(int i = 0; i < vec.size(); ++i) {
         std::cout << vec[i] << '\n';
     }
@@ -64,8 +64,8 @@ void printVec(std::vector<double> &vec) {
 
 int main() {
     for(int n = 0; n < 2000; ++n) {
-        std::string par_hit_file = "par_hits" + std::to_string(n) + ".dat";
-        std::string index_file_name = "globalIndexes" + std::to_string(n) + ".dat";
+        std::string par_hit_file = "/home/simonb/Documents/thesis/doublet_files/par_hits" + std::to_string(n) + ".dat";
+        std::string index_file_name = "/home/simonb/Documents/thesis/doublet_files/globalIndexes" + std::to_string(n) + ".dat";
 
         // Read the par_hits.dat file
         std::ifstream is;
@@ -126,7 +126,7 @@ int main() {
         std::ofstream outFile;
         std::string hist_file_name = "hist" + std::to_string(n) + ".csv";
         outFile.open(hist_file_name);
-        outFile << "pairIndex" << '\n';
+        outFile << "home/simonb/Documents/thesis/doublet_files/pairIndex" << '\n';
 
         std::vector<int> pair_indexes_;
         for(int j = 0; j < pairs_.size(); ++j) {
