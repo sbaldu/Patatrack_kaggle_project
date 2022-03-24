@@ -111,7 +111,7 @@ def plotPair(r_pair_,z_pair_):
 
 open_hit_file = open("par_hits.dat", 'w')
 open_truth_file = open("globalIndexes.dat", 'w') 
-for i in range(3):
+for i in range(20):
     hit_df = pd.read_csv(hit_files[i])
     truth_df = pd.read_csv(truth_files[i])
     layer_ids = hit_df['layer_id'].values.tolist()
