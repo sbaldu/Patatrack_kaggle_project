@@ -13,7 +13,7 @@ from matplotlib.ticker import PercentFormatter
 from mpl_toolkits.mplot3d import Axes3D
 import glob
 
-path = '/home/simonb/Documents/thesis/'
+path = '/home/simonb/documents/thesis/'
 
 # We define a map for the indexes
 index_map = {}
@@ -75,13 +75,10 @@ hit_files.sort()
 par_files.sort()
 truth_files.sort()
 
-maxLayerId = 6
-def layerGlobalIndex(volume,layer):
-    return (volume-7)*(maxLayerId + 1) + (layer-2)
-
 radius = []
 z = []
 index = []
+"""
 for i in range(2):
     ev = pd.read_csv(hit_files[i])
     ev_hitid_col = ev['hit_id'].values.tolist()
@@ -97,6 +94,7 @@ for i in range(2):
             radius.append(np.sqrt(ev_x_col[i]**2 + ev_y_col[i]**2))
             z.append(ev_z_col[i])
             index.append(layerGlobalIndex(ev_vol_col[i],ev_lay_col[i]))
+"""
 
 def plotPair(r_pair_,z_pair_):
     fig = plt.figure()
@@ -109,9 +107,10 @@ def plotPair(r_pair_,z_pair_):
     plt.ylim(0,1000)
     plt.show() 
 
-open_hit_file = open("par_hits.dat", 'w')
-open_truth_file = open("globalIndexes.dat", 'w') 
-for i in range(20):
+for i in range(2000):
+    open_hit_file = open(path + "train_3/par_hits" + str(i) + ".dat", 'w')
+    open_truth_file = open(path + "train_3/globalIndexes" + str(i) + ".dat", 'w') 
+    
     hit_df = pd.read_csv(hit_files[i])
     truth_df = pd.read_csv(truth_files[i])
     layer_ids = hit_df['layer_id'].values.tolist()
@@ -133,9 +132,9 @@ for i in range(20):
         if total_df_['particle_id'][i] != 0:
             open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
             open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
-        
-open_hit_file.close()
-open_truth_file.close()    
+    
+    open_hit_file.close()
+    open_truth_file.close()    
 
 hits_ = pd.read_csv(hit_files[0])
 particles_ = pd.read_csv(par_files[0])
