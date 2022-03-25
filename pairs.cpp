@@ -4,17 +4,17 @@
 #include <algorithm>
 #include <set>
 #include <string>
+#include <iomanip>
 
 std::vector<int> sort_hits(double const &particle_id, std::vector<double> &par_hits_) {
     std::vector<int> result;
 
     for(int i = 0; i < par_hits_.size(); ++i) {
-        std::cout << "sono qui" << '\n';
         if(par_hits_[i] == particle_id) {
-            std::cout << "sono dentro" << '\n';
-            if(par_hits_[i+1] != particle_id) {
-                break;
-            }
+            result.push_back(i);
+            //if(par_hits_[i+1] != particle_id) {
+            //    break;
+            //}
         }
     }
             
@@ -67,8 +67,8 @@ int main() {
     //int n_files = 1770;
     int n_files = 0;
     for(int n = 0; n <= n_files; ++n) {
-        std::string par_hit_file = "/home/simonb/Documents/thesis/doublet_files/par_hits" + std::to_string(n) + ".dat";
-        std::string index_file_name = "/home/simonb/Documents/thesis/doublet_files/globalIndexes" + std::to_string(n) + ".dat";
+        std::string par_hit_file = "/home/simonb/documents/thesis/not_sorted/par_hits_ns" + std::to_string(n) + ".dat";
+        std::string index_file_name = "/home/simonb/documents/thesis/not_sorted/globalIndexes_ns" + std::to_string(n) + ".dat";
 
         // Read the par_hits.dat file
         std::ifstream is;
@@ -112,17 +112,24 @@ int main() {
 
         for(int i = 0; i < particle_types.size(); ++i) {
             std::vector<int> par_hit_indices = sort_hits(particle_types[i],particles_hits);
-            //printVec(par_hit_indices);
+            //std::cout << std::fixed;
+            //std::cout << std::setprecision(2);
+            //std::cout << particle_types[i] << '\n';
+
             for(int j = 0; j < par_hit_indices.size() - 1; ++j) {
                 if(globalIndexes[par_hit_indices[j]] != globalIndexes[par_hit_indices[j+1]]) {
                     pairs_.push_back({globalIndexes[par_hit_indices[j]],globalIndexes[par_hit_indices[j+1]]});
                 }
             }
+            //std::cout << pairs_.size() << '\n';
+            //for(int k = 0; k < pairs_.size(); ++k) {
+            //    printVec(pairs_[i]);
+            //}      
         }
 
         // Give to each pair its index and prepare the csv file for the histogram
         std::ofstream outFile;
-        std::string hist_file_name = "/home/simonb/Documents/thesis/doublet_files/hist" + std::to_string(n) + ".csv";
+        std::string hist_file_name = "/home/simonb/documents/thesis/not_sorted/hist_ns" + std::to_string(n) + ".csv";
         outFile.open(hist_file_name);
         outFile << "pairIndex" << '\n';
 
