@@ -11,9 +11,9 @@ std::vector<int> sort_hits(double const &particle_id, std::vector<double> &par_h
     for(int i = 0; i < par_hits_.size(); ++i) {
         if(par_hits_[i] == particle_id) {
             result.push_back(i);
-            //if(par_hits_[i+1] != particle_id) {
-            //    break;
-            //}
+            if(par_hits_[i+1] != particle_id) {
+                break;
+            }
         }
     }
             
@@ -63,7 +63,8 @@ void printVec(std::vector<double> const &vec) {
 }
 
 int main() {
-    for(int n = 0; n < 2000; ++n) {
+    int n_files = 1770;
+    for(int n = 0; n < n_files; ++n) {
         std::string par_hit_file = "/home/simonb/Documents/thesis/doublet_files/par_hits" + std::to_string(n) + ".dat";
         std::string index_file_name = "/home/simonb/Documents/thesis/doublet_files/globalIndexes" + std::to_string(n) + ".dat";
 
