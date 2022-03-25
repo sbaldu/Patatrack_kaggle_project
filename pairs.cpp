@@ -9,8 +9,9 @@ std::vector<int> sort_hits(double const &particle_id, std::vector<double> &par_h
     std::vector<int> result;
 
     for(int i = 0; i < par_hits_.size(); ++i) {
+        std::cout << "sono qui" << '\n';
         if(par_hits_[i] == particle_id) {
-            result.push_back(i);
+            std::cout << "sono dentro" << '\n';
             if(par_hits_[i+1] != particle_id) {
                 break;
             }
@@ -63,8 +64,9 @@ void printVec(std::vector<double> const &vec) {
 }
 
 int main() {
-    int n_files = 1770;
-    for(int n = 0; n < n_files; ++n) {
+    //int n_files = 1770;
+    int n_files = 0;
+    for(int n = 0; n <= n_files; ++n) {
         std::string par_hit_file = "/home/simonb/Documents/thesis/doublet_files/par_hits" + std::to_string(n) + ".dat";
         std::string index_file_name = "/home/simonb/Documents/thesis/doublet_files/globalIndexes" + std::to_string(n) + ".dat";
 
@@ -109,25 +111,20 @@ int main() {
         std::vector<std::vector<int>> pairs_;
 
         for(int i = 0; i < particle_types.size(); ++i) {
-            if(i%1000 == 0) {
-                std::cout << i << '\n';
-            }
             std::vector<int> par_hit_indices = sort_hits(particle_types[i],particles_hits);
+            //printVec(par_hit_indices);
             for(int j = 0; j < par_hit_indices.size() - 1; ++j) {
                 if(globalIndexes[par_hit_indices[j]] != globalIndexes[par_hit_indices[j+1]]) {
                     pairs_.push_back({globalIndexes[par_hit_indices[j]],globalIndexes[par_hit_indices[j+1]]});
                 }
             }
-            //for (int j = 0; j < pairs_.size(); ++j) {
-            //std::cout << '[' << pairs_[j][0] << ',' << pairs_[j][1] << ']' << '\n';
-            //}
         }
 
         // Give to each pair its index and prepare the csv file for the histogram
         std::ofstream outFile;
-        std::string hist_file_name = "hist" + std::to_string(n) + ".csv";
+        std::string hist_file_name = "/home/simonb/Documents/thesis/doublet_files/hist" + std::to_string(n) + ".csv";
         outFile.open(hist_file_name);
-        outFile << "home/simonb/Documents/thesis/doublet_files/pairIndex" << '\n';
+        outFile << "pairIndex" << '\n';
 
         std::vector<int> pair_indexes_;
         for(int j = 0; j < pairs_.size(); ++j) {
