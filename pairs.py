@@ -13,7 +13,7 @@ from matplotlib.ticker import PercentFormatter
 from mpl_toolkits.mplot3d import Axes3D
 import glob
 
-path = '/home/simonb/documents/thesis/'
+path = '/home/simonb/Documents/thesis/'
 
 # We define a map for the indexes
 index_map = {}
