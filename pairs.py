@@ -78,7 +78,7 @@ truth_files.sort()
 radius = []
 z = []
 index = []
-"""
+
 for i in range(2):
     ev = pd.read_csv(hit_files[i])
     ev_hitid_col = ev['hit_id'].values.tolist()
@@ -93,18 +93,21 @@ for i in range(2):
         if (i%50) == 0:
             radius.append(np.sqrt(ev_x_col[i]**2 + ev_y_col[i]**2))
             z.append(ev_z_col[i])
-            index.append(layerGlobalIndex(ev_vol_col[i],ev_lay_col[i]))
-"""
+            #index.append(layerGlobalIndex(ev_vol_col[i],ev_lay_col[i]))
 
 def plotPair(r_pair_,z_pair_):
     fig = plt.figure()
     #cm = plt.cm.get_cmap('nipy_spectral')
-    plt.scatter(z,radius,color='#008080')
-    plt.scatter([z_pair_[0],z_pair_[1]],[r_pair_[0],r_pair_[1]],s=80,marker='X',color='red')
+    point1 = [1, 2]
+    point2 = [3, 4]
+    x_values = [point1[0], point2[0]]
+    y_values = [point1[1], point2[1]]
+    plt.scatter(z,radius,color='royalblue')
+    plt.plot([z_pair_[0],z_pair_[1]], [r_pair_[0],r_pair_[1]], 'bo', linestyle="-", color='red')
     plt.xlabel("z (mm)")
     plt.ylabel("r (mm)")
     plt.xlim(-3000,3000)
-    plt.ylim(0,1000)
+    plt.ylim(0,1100)
     plt.show() 
 
 open_hit_file = open("test_par_hits.dat", 'w')
@@ -139,7 +142,8 @@ for i in range(total_df_size):
 open_hit_file.close()
 open_truth_file.close() 
 """
-
+# This creates the dat files used in the c++ code for all the events (it takes a couple of hours to run, so don't un-comment it)
+"""
 for i in range(len(hit_files)):
     open_hit_file = open(path + "not_sorted/par_hits_ns" + str(i) + ".dat", 'w')
     open_truth_file = open(path + "not_sorted/globalIndexes_ns" + str(i) + ".dat", 'w') 
@@ -163,13 +167,12 @@ for i in range(len(hit_files)):
 
     for i in range(total_df_size):
         if total_df_['particle_id'][i] != 0:
-            #print(par_ids_list_[i]) 
             open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
             open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
     
     open_hit_file.close()
     open_truth_file.close()    
-
+"""
 hits_ = pd.read_csv(hit_files[0])
 particles_ = pd.read_csv(par_files[0])
 truth_ = pd.read_csv(truth_files[0])
@@ -191,17 +194,7 @@ total_df = total_df.rename(columns={1:'globalIndex'})
 print(total_df)
 
 total_df_size = total_df['particle_id'].size
-"""
-open_file = open("par_hits.dat", 'w')    
-for i in range(total_df_size):
-    open_file.write(str(total_df['particle_id'][i]) + '\n')
-open_file.close()
 
-open_file = open("globalIndexes.dat", 'w')    
-for i in range(total_df_size):
-    open_file.write(str(total_df['globalIndex'][i]) + '\n')
-open_file.close()
-"""
 def sort_hits(particle_id):
     list_hits = []
 
@@ -239,7 +232,10 @@ def return_index(pair,pairs):
 
 list_pair_indexes = []
 
-for i in range(n_particles):
+# The range in the for loop is set to plot just a few tracks
+for i in range(int(n_particles/4000)):
+    # I increase the value of i just to show different tracks
+    i += 8000
     print(i)
     if t_particle_types[i] != 0:
         par_hit_indexes = sort_hits(t_particle_types[i])        # I think that this function is slowing down the program
@@ -249,8 +245,8 @@ for i in range(n_particles):
         #r_ = []
         #z_ = []
         pairs_ = []
-        #r_pair  =[]
-        #z_pair = []
+        r_pair  =[]
+        z_pair = []
         for index in par_hit_indexes:
             #print(total_df['r'][index])
             if (index != par_hit_indexes[len(par_hit_indexes)-1]) and (total_df['globalIndex'][index] != total_df['globalIndex'][par_hit_indexes[par_hit_indexes.index(index)+1]]):
@@ -258,13 +254,10 @@ for i in range(n_particles):
                 #z_.append(total_df['z'][index])
                 #hits_globalindexes.append(total_df['globalIndex'][index])
                 pairs_.append([total_df['globalIndex'][index],total_df['globalIndex'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
-                #r_pair.append([total_df['r'][index],total_df['r'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
-                #z_pair.append([total_df['z'][index],total_df['z'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
+                r_pair.append([total_df['r'][index],total_df['r'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
+                z_pair.append([total_df['z'][index],total_df['z'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
     
-        #print(hits_globalindexes)
-        #print(r_)
-        #print(z_)
-        print(pairs_)
+        #print(pairs_)
     
         """
         fig = plt.figure()
@@ -276,8 +269,8 @@ for i in range(n_particles):
         plt.show() 
         """
 
-        #for i in range(len(pairs_)):
-        #    plotPair(r_pair[i],z_pair[i])
+        for i in range(len(pairs_)):
+            plotPair(r_pair[i],z_pair[i])
     
         # Now I want to take all the doublets created for this particle and assign to each one a pair-index
         pair_indexes = []
@@ -302,3 +295,15 @@ open_file = open("doubletsIndexes.csv", 'w')
 for i in range(n_of_pairs):
     open_file.write(str(list_pair_indexes[i]) + '\n')
 open_file.close()
+
+"""
+open_file = open("par_hits.dat", 'w')    
+for i in range(total_df_size):
+    open_file.write(str(total_df['particle_id'][i]) + '\n')
+open_file.close()
+
+open_file = open("globalIndexes.dat", 'w')    
+for i in range(total_df_size):
+    open_file.write(str(total_df['globalIndex'][i]) + '\n')
+open_file.close()
+"""
