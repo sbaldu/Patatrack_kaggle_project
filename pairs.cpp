@@ -173,8 +173,8 @@ int main() {
 
     int n_files = 1769;
     for(int n = 0; n <= n_files; ++n) {
-        std::string par_hit_file = "/home/simonb/documents/thesis/not_sorted/par_hits_ns" + std::to_string(n) + ".dat";
-        std::string index_file_name = "/home/simonb/documents/thesis/not_sorted/globalIndexes_ns" + std::to_string(n) + ".dat";
+        std::string par_hit_file = "/home/simonb/Documents/thesis/not_sorted/par_hits_ns" + std::to_string(n) + ".dat";
+        std::string index_file_name = "/home/simonb/Documents/thesis/not_sorted/globalIndexes_ns" + std::to_string(n) + ".dat";
 
         // Read the par_hits.dat file
         std::ifstream is;
@@ -235,7 +235,7 @@ int main() {
 
         // Give to each pair its index and prepare the csv file for the histogram
         std::ofstream outFile;
-        std::string hist_file_name = "/home/simonb/documents/thesis/not_sorted/hist_ns" + std::to_string(n) + ".csv";
+        std::string hist_file_name = "/home/simonb/Documents/thesis/not_sorted/hist_ns" + std::to_string(n) + ".csv";
         outFile.open(hist_file_name);
         outFile << "pairIndex" << ',' << "pair" << ',' << "volume1" << ',' << "volume2" << ',' << "layer1" << "layer2" << ',' << '\n';
 
