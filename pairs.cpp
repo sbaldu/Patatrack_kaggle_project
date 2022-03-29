@@ -6,6 +6,7 @@
 #include <string>
 #include <iomanip>
 #include <map>
+#include <array>
 
 /*
 struct Layer{
@@ -122,13 +123,13 @@ int main() {
     //std::map<Layer,int> index_map;
     std::map<std::vector<int>, int> index_map;
 
-    index_map[{7,2}] = 0;
-    index_map[{7,4}] = 1;
-    index_map[{7,6}] = 2;
+    index_map[{7,2}] = 6;
+    index_map[{7,4}] = 5;
+    index_map[{7,6}] = 4;
     index_map[{7,8}] = 3;
-    index_map[{7,10}] = 4;
-    index_map[{7,12}] = 5;
-    index_map[{7,14}] = 6;
+    index_map[{7,10}] = 2;
+    index_map[{7,12}] = 1;
+    index_map[{7,14}] = 0;
     index_map[{8,2}] = 7;
     index_map[{8,4}] = 8;
     index_map[{8,6}] = 9;
@@ -140,12 +141,12 @@ int main() {
     index_map[{9,10}] = 15;
     index_map[{9,12}] = 16;
     index_map[{9,14}] = 17;
-    index_map[{12,2}] = 18;
-    index_map[{12,4}] = 19;
-    index_map[{12,6}] = 20;
-    index_map[{12,8}] = 21;
-    index_map[{12,10}] = 22;
-    index_map[{12,12}] = 23;
+    index_map[{12,2}] = 23;
+    index_map[{12,4}] = 22;
+    index_map[{12,6}] = 21;
+    index_map[{12,8}] = 20;
+    index_map[{12,10}] = 19;
+    index_map[{12,12}] = 18;
     index_map[{13,2}] = 24;
     index_map[{13,4}] = 25;
     index_map[{13,6}] = 26;
@@ -156,12 +157,12 @@ int main() {
     index_map[{14,8}] = 31;
     index_map[{14,10}] = 32;
     index_map[{14,12}] = 33;
-    index_map[{16,2}] = 34;
-    index_map[{16,4}] = 35;
-    index_map[{16,6}] = 36;
-    index_map[{16,8}] = 37;
-    index_map[{16,10}] = 38;
-    index_map[{16,12}] = 39;
+    index_map[{16,2}] = 39;
+    index_map[{16,4}] = 38;
+    index_map[{16,6}] = 37;
+    index_map[{16,8}] = 36;
+    index_map[{16,10}] = 35;
+    index_map[{16,12}] = 34;
     index_map[{17,2}] = 40;
     index_map[{17,4}] = 41;
     index_map[{18,2}] = 42;
