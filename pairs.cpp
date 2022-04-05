@@ -174,8 +174,13 @@ int main() {
 
     int n_files = 1769;
     for(int n = 0; n <= n_files; ++n) {
+        // int event_id = n + 4590;
+
         std::string par_hit_file = "/home/simonb/Documents/thesis/not_sorted/par_hits_ns" + std::to_string(n) + ".dat";
         std::string index_file_name = "/home/simonb/Documents/thesis/not_sorted/globalIndexes_ns" + std::to_string(n) + ".dat";
+        std::string x_file_name = "/home/simonb/Documents/thesis/not_sorted/x_ns" + std::to_string(n) + ".dat";
+        std::string y_file_name = "/home/simonb/Documents/thesis/not_sorted/y_ns" + std::to_string(n) + ".dat";
+        std::string z_file_name = "/home/simonb/Documents/thesis/not_sorted/z_ns" + std::to_string(n) + ".dat";
 
         // Read the par_hits.dat file
         std::ifstream is;
@@ -200,6 +205,42 @@ int main() {
             globalIndexes.push_back(b);
         }
         is2.close();
+
+        // Read the globalIndex.dat file
+        std::ifstream is3;
+        is2.open(x_file_name);
+        std::vector<int> x_;
+        int c;
+
+        // Create the vector containing all the global indexes (globalIndex column in the df)
+        for(int i = 0; is3 >> c; ++i) {
+            x_.push_back(b);
+        }
+        is3.close();
+
+        // Read the globalIndex.dat file
+        std::ifstream is4;
+        is2.open(y_file_name);
+        std::vector<int> y_;
+        int d;
+
+        // Create the vector containing all the global indexes (globalIndex column in the df)
+        for(int i = 0; is4 >> d; ++i) {
+            y_.push_back(d);
+        }
+        is4.close();
+
+        // Read the x_ns*.dat file
+        std::ifstream is5;
+        is2.open(z_file_name);
+        std::vector<int> z_;
+        int e;
+
+        // Create the vector containing all the global indexes (globalIndex column in the df)
+        for(int i = 0; is5 >> e; ++i) {
+            z_.push_back(e);
+        }
+        is5.close();
     
         // Remove all duplicates from particle_hits
         std::vector<double> particle_types = particles_hits;
