@@ -8,14 +8,6 @@
 #include <map>
 #include <array>
 
-/*
-struct Layer{
-    int volume_;
-    int layer_;
-};
-*/
-
-
 std::vector<int> sort_hits(double const &particle_id, std::vector<double> &par_hits_) {
     std::vector<int> result;
 

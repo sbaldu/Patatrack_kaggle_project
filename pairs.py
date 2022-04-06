@@ -145,7 +145,6 @@ open_truth_file.close()
 # This creates the dat files used in the c++ code for all the events (it takes a couple of hours to run, so don't un-comment it)
 
 # Save the number of hits for each event and the event ids
-
 """
 hits_per_event = []
 for i in range(len(hit_files)):
