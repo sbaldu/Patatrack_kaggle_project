@@ -13,7 +13,7 @@ from matplotlib.ticker import PercentFormatter
 from mpl_toolkits.mplot3d import Axes3D
 import glob
 
-path = '/home/simonb/documents/thesis/'
+path = '/home/simone/Documents/thesis/'
 
 # We define a map for the indexes
 index_map = {}
@@ -145,21 +145,24 @@ open_truth_file.close()
 # This creates the dat files used in the c++ code for all the events (it takes a couple of hours to run, so don't un-comment it)
 
 # Save the number of hits for each event and the event ids
-"""
-hits_per_event = []
+hits_per_event = {}
+
 for i in range(len(hit_files)):
-    open_hit_file = open(path + "not_sorted/par_hits_ns" + str(i) + ".dat", 'w')
-    open_truth_file = open(path + "not_sorted/globalIndexes_ns" + str(i) + ".dat", 'w') 
-    open_x_file = open(path + "not_sorted/x_ns" + str(i) + ".dat", 'w') 
-    open_y_file = open(path + "not_sorted/y_ns" + str(i) + ".dat", 'w')
-    open_z_file = open(path + "not_sorted/z_ns" + str(i) + ".dat", 'w')  
+    event_identifier = hit_files[i][48:52]
+    print(event_identifier)
+    
+    open_hit_file = open(path + "not_sorted/par_hits_ns" + event_identifier + ".dat", 'w')
+    open_truth_file = open(path + "not_sorted/globalIndexes_ns" + event_identifier + ".dat", 'w') 
+    open_x_file = open(path + "not_sorted/x_ns" + event_identifier + ".dat", 'w') 
+    open_y_file = open(path + "not_sorted/y_ns" + event_identifier + ".dat", 'w')
+    open_z_file = open(path + "not_sorted/z_ns" + event_identifier + ".dat", 'w')  
 
     hit_df = pd.read_csv(hit_files[i])
     truth_df = pd.read_csv(truth_files[i])
     layer_ids = hit_df['layer_id'].values.tolist()
     volume_ids = hit_df['volume_id'].values.tolist()
     
-    hits_per_event.append(len(layer_ids))
+    hits_per_event[event_identifier] = len(layer_ids)
 
     df_size = len(layer_ids)
     indexes_list_ = []
@@ -187,11 +190,13 @@ for i in range(len(hit_files)):
     open_x_file.close()
     open_y_file.close()
     open_z_file.close()
-open_hpe_file = open(path + "not_sorted/hits_per_event.dat", 'w')
-for event in hits_per_event:
-    open_hpe_file.write(str(hits_per_event[event]))
-open_hpe_file.close()
-"""
+
+#open_hpe_file = open(path + "not_sorted/hits_per_event.dat", 'w')
+#for event_identifier_ in hits_per_event:
+#    open_hpe_file.write(event_identifier_ + ',' + str(hits_per_event[event_identifier_]))
+#open_hpe_file.close()
+
+
 hits_ = pd.read_csv(hit_files[0])
 particles_ = pd.read_csv(par_files[0])
 truth_ = pd.read_csv(truth_files[0])
