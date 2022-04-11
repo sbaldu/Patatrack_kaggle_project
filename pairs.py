@@ -145,55 +145,57 @@ open_truth_file.close()
 # This creates the dat files used in the c++ code for all the events (it takes a couple of hours to run, so don't un-comment it)
 
 # Save the number of hits for each event and the event ids
-
-#hits_per_event = []
+hits_per_event = {}
+"""
 for i in range(len(hit_files)):
-    print(i)
-    
-    open_hit_file = open(path + "not_sorted/par_hits_ns" + str(i) + ".dat", 'w')
-    open_truth_file = open(path + "not_sorted/globalIndexes_ns" + str(i) + ".dat", 'w') 
-    #open_x_file = open(path + "not_sorted/x_ns" + str(i) + ".dat", 'w') 
-    #open_y_file = open(path + "not_sorted/y_ns" + str(i) + ".dat", 'w')
-    #open_z_file = open(path + "not_sorted/z_ns" + str(i) + ".dat", 'w')  
-    
+    #print(i)
+
+    event_indentifier = hit_files[i][48:52]
+
+    open_hit_file = open(path + "not_sorted/par_hits_ns" + event_indentifier + ".dat", 'w')
+    open_truth_file = open(path + "not_sorted/globalIndexes_ns" + event_indentifier + ".dat", 'w') 
+    open_x_file = open(path + "not_sorted/x_ns" + event_indentifier + ".dat", 'w')
+    open_y_file = open(path + "not_sorted/y_ns" + event_indentifier + ".dat", 'w')
+    open_z_file = open(path + "not_sorted/z_ns" + event_indentifier + ".dat", 'w')
+
     hit_df = pd.read_csv(hit_files[i])
     truth_df = pd.read_csv(truth_files[i])
     layer_ids = hit_df['layer_id'].values.tolist()
     volume_ids = hit_df['volume_id'].values.tolist()
-    
-    #hits_per_event.append(len(layer_ids))
+
+    hits_per_event[event_indentifier] = len(layer_ids)
 
     df_size = len(layer_ids)
     indexes_list_ = []
-
     for row in range(df_size):
         indexes_list_.append(index_map[(volume_ids[row],layer_ids[row])])
     globalIndexes = pd.Series(indexes_list_)
 
-    total_df_ = pd.concat([truth_df['particle_id'],np.sqrt(hit_df['x']**2 + hit_df['y']**2),hit_df['z'],globalIndexes,hit_df['x'],hit_df['y'],hit_df['z']],axis=1)
+    total_df_ = pd.concat([truth_df['particle_id'],np.sqrt(hit_df['x']**2 + hit_df['y']**2),hit_df['z'],globalIndexes],axis=1)
     total_df_ = total_df_.rename(columns={0:'r'})
     total_df_ = total_df_.rename(columns={1:'globalIndex'})
 
     total_df_size = total_df_['particle_id'].size
-    
-    #for i in range(total_df_size):
-    #    if total_df_['particle_id'][i] != 0:
-            #open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
-            #open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
-            #open_x_file.write(str(total_df_['x']) + '\n')
-            #open_y_file.write(str(total_df_['y']) + '\n')
-            #open_z_file.write(str(total_df_['z']) + '\n')
-    
-    #open_hit_file.close()
-    #open_truth_file.close()    
-    #open_x_file.close()
-    #open_y_file.close()
-    #open_z_file.close()
-    
-#open_hpe_file = open(path + "not_sorted/hits_per_event.dat", 'w')
-#for event in hits_per_event:
-#    open_hpe_file.write(str(hits_per_event[event]))
-#open_hpe_file.close()
+
+    for i in range(total_df_size):
+        if total_df_['particle_id'][i] != 0:
+            open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
+            open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
+            open_x_file.write(str(hit_df['x'][i]) + '\n')
+            open_y_file.write(str(hit_df['y'][i]) + '\n')
+            open_z_file.write(str(hit_df['z'][i]) + '\n')
+
+    open_hit_file.close()
+    open_truth_file.close()  
+    open_x_file.close()
+    open_y_file.close()
+    open_z_file.close()     
+""" 
+open_hpe_file = open(path + "not_sorted/hits_per_event.dat", 'w')
+for event_identifier_ in hits_per_event:
+    open_hpe_file.write(event_identifier_ + ',' + str(hits_per_event[event_identifier_]))
+open_hpe_file.close()
+
 
 hits_ = pd.read_csv(hit_files[0])
 particles_ = pd.read_csv(par_files[0])
