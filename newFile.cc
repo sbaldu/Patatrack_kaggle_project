@@ -45,6 +45,9 @@ void myClass::acquire_single_event(int file_number) {
   if(event_identifier >= 5000 && event_identifier < 5500) {
     std::cout << "This file is missing" << '\n';
   } else {
+    // Check that the number of hits in c++ is the same that you have in python
+    // Make a function that prints all the hits for a single layer
+    // Sort also by phi (atg(y/x))
     std::string x_file_name = path + "x_ns" + std::to_string(file_number) + ".dat";
     std::string y_file_name = path + "y_ns" + std::to_string(file_number) + ".dat";
     std::string z_file_name = path + "z_ns" + std::to_string(file_number) + ".dat";
