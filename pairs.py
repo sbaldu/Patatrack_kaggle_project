@@ -146,7 +146,7 @@ open_truth_file.close()
 
 # Save the number of hits for each event and the event ids
 hits_per_event = {}
-
+"""
 for i in range(len(hit_files)):
     #print(i)
 
@@ -190,7 +190,7 @@ for i in range(len(hit_files)):
     open_x_file.close()
     open_y_file.close()
     open_z_file.close()     
-
+""" 
 open_hpe_file = open(path + "not_sorted/hits_per_event.dat", 'w')
 for event_identifier_ in hits_per_event:
     open_hpe_file.write(event_identifier_ + ',' + str(hits_per_event[event_identifier_]))
