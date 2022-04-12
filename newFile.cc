@@ -9,13 +9,35 @@
 #include "CUDADataFormats/TrackingRecHit2DHeterogeneous.h"
 #include <fstream>
 
-std::string path = "/home/simonb/documents/thesis/not_sorted/";
+std::string path = "/home/simone/Documents/thesis/not_sorted/";
+int n_events = 1770;
+
+std::map<int,int> def_hits_map() {
+  std::map<int,int> event_nhits = {};
+  std::ifstream is_;
+  is_.open(path + "hits_per_event.csv");
+  std::string a;
+
+  for(int i = 0; is_ >> a; ++i) {
+    std::stringstream str(a);
+    std::string row;
+    std::vector<int> key_values;
+  
+    while(std::getline(str, row, ',')) {
+      key_values.push_back(std::stoi(row));
+    }
+    event_nhits[key_values[0]] = key_values[1];
+  }
+}
+
+std::map<int,int> n_hits_map = def_hits_map();
 
 class myClass : public edm::EDProducer {
 public:
   explicit myClass(edm::ProductRegistry& reg);
   ~myClass() override = default;
   void acquire_single_event(int file_number);
+  
   std::vector<double> get_x();
   std::vector<double> get_y();
   std::vector<double> get_z();
@@ -45,9 +67,9 @@ void myClass::acquire_single_event(int file_number) {
   if(event_identifier >= 5000 && event_identifier < 5500) {
     std::cout << "This file is missing" << '\n';
   } else {
-    // Check that the number of hits in c++ is the same that you have in python
     // Make a function that prints all the hits for a single layer
-    // Sort also by phi (atg(y/x))
+    
+    
     std::string x_file_name = path + "x_ns" + std::to_string(file_number) + ".dat";
     std::string y_file_name = path + "y_ns" + std::to_string(file_number) + ".dat";
     std::string z_file_name = path + "z_ns" + std::to_string(file_number) + ".dat";
@@ -82,6 +104,9 @@ void myClass::acquire_single_event(int file_number) {
     for(int i = 0 ; i < static_cast<int>(hits_y_coordinates.size()); ++i) {
       hits_r_coordinates.push_back(sqrt(pow(hits_y_coordinates[i],2) + pow(hits_z_coordinates[i],2)));
     }
+
+    std::cout << hits_z_coordinates.size() << '\n';
+    std::cout << n_hits_map[event_identifier] << '\n';
   }
 }
 
