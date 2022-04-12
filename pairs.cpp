@@ -66,18 +66,6 @@ void printVec(std::vector<double> const &vec) {
     }
 }
 
-/*
-Layer getKey(std::map<Layer,int> index_map_, int value_) {
-    auto it = index_map_.begin();
-    auto last = index_map_.end();
-
-    for(; it != last; ++it) {
-        if(it->second == value_) {
-            return (it->first);
-        }
-    }
-}
-*/
 std::vector<int> getkey(std::map<std::vector<int>, int> index_map_, int value_) {
     auto it = index_map_.begin();
     auto last = index_map_.end();
@@ -112,20 +100,19 @@ int main() {
     }
     
     // Define a map for the layer global index
-    //std::map<Layer,int> index_map;
     std::map<std::vector<int>, int> index_map;
 
-    index_map[{7,2}] = 6;
-    index_map[{7,4}] = 5;
-    index_map[{7,6}] = 4;
-    index_map[{7,8}] = 3;
-    index_map[{7,10}] = 2;
-    index_map[{7,12}] = 1;
-    index_map[{7,14}] = 0;
-    index_map[{8,2}] = 7;
-    index_map[{8,4}] = 8;
-    index_map[{8,6}] = 9;
-    index_map[{8,8}] = 10;
+    index_map[{7,2}] = 10;
+    index_map[{7,4}] = 9;
+    index_map[{7,6}] = 8;
+    index_map[{7,8}] = 7;
+    index_map[{7,10}] = 6;
+    index_map[{7,12}] = 5;
+    index_map[{7,14}] = 4;
+    index_map[{8,2}] = 0;
+    index_map[{8,4}] = 1;
+    index_map[{8,6}] = 2;
+    index_map[{8,8}] = 3;
     index_map[{9,2}] = 11;
     index_map[{9,4}] = 12;
     index_map[{9,6}] = 13;
@@ -133,30 +120,30 @@ int main() {
     index_map[{9,10}] = 15;
     index_map[{9,12}] = 16;
     index_map[{9,14}] = 17;
-    index_map[{12,2}] = 23;
-    index_map[{12,4}] = 22;
-    index_map[{12,6}] = 21;
-    index_map[{12,8}] = 20;
-    index_map[{12,10}] = 19;
-    index_map[{12,12}] = 18;
-    index_map[{13,2}] = 24;
-    index_map[{13,4}] = 25;
-    index_map[{13,6}] = 26;
-    index_map[{13,8}] = 27;
+    index_map[{12,2}] = 27;
+    index_map[{12,4}] = 26;
+    index_map[{12,6}] = 25;
+    index_map[{12,8}] = 24;
+    index_map[{12,10}] = 23;
+    index_map[{12,12}] = 22;
+    index_map[{13,2}] = 18;
+    index_map[{13,4}] = 19;
+    index_map[{13,6}] = 20;
+    index_map[{13,8}] = 21;
     index_map[{14,2}] = 28;
     index_map[{14,4}] = 29;
     index_map[{14,6}] = 30;
     index_map[{14,8}] = 31;
     index_map[{14,10}] = 32;
     index_map[{14,12}] = 33;
-    index_map[{16,2}] = 39;
-    index_map[{16,4}] = 38;
-    index_map[{16,6}] = 37;
-    index_map[{16,8}] = 36;
-    index_map[{16,10}] = 35;
-    index_map[{16,12}] = 34;
-    index_map[{17,2}] = 40;
-    index_map[{17,4}] = 41;
+    index_map[{16,2}] = 41;
+    index_map[{16,4}] = 40;
+    index_map[{16,6}] = 39;
+    index_map[{16,8}] = 38;
+    index_map[{16,10}] = 37;
+    index_map[{16,12}] = 36;
+    index_map[{17,2}] = 34;
+    index_map[{17,4}] = 35;
     index_map[{18,2}] = 42;
     index_map[{18,4}] = 43;
     index_map[{18,6}] = 44;
@@ -164,15 +151,16 @@ int main() {
     index_map[{18,10}] = 46;
     index_map[{18,12}] = 47;
 
-    int n_files = 1769;
+    int n_files = 1819;
     for(int n = 0; n <= n_files; ++n) {
+        std::cout << n << '\n';
         int event_id = n + 4590;
         if(event_id >= 5000 && event_id < 5500) {
             continue;
         }
 
-        std::string par_hit_file = "/home/simonb/Documents/thesis/not_sorted/par_hits_ns" + std::to_string(n) + ".dat";
-        std::string index_file_name = "/home/simonb/Documents/thesis/not_sorted/globalIndexes_ns" + std::to_string(n) + ".dat";
+        std::string par_hit_file = "/home/simone/Documents/thesis/not_sorted/par_hits_ns" + std::to_string(event_id) + ".dat";
+        std::string index_file_name = "/home/simone/Documents/thesis/not_sorted/globalIndexes_ns" + std::to_string(event_id) + ".dat";
 
         // Read the par_hits.dat file
         std::ifstream is;
@@ -197,6 +185,7 @@ int main() {
             globalIndexes.push_back(b);
         }
         is2.close();
+        //std::cout << globalIndexes.size() << '\n';
 
         // Remove all duplicates from particle_hits
         std::vector<double> particle_types = particles_hits;
@@ -211,7 +200,7 @@ int main() {
         std::vector<std::vector<int>> pair_combinations = combine(indexes);
         //std::vector<std::vector<int>> pairIndexes;
 
-        std::cout << particle_types.size() << '\n';
+        //std::cout << particle_types.size() << '\n';
         std::vector<std::vector<int>> pairs_;
 
         for(int i = 0; i < particle_types.size(); ++i) {
@@ -228,12 +217,12 @@ int main() {
             //std::cout << pairs_.size() << '\n';
             //for(int k = 0; k < pairs_.size(); ++k) {
             //    printVec(pairs_[i]);
-            //}      
+            //}
         }
 
         // Give to each pair its index and prepare the csv file for the histogram
         std::ofstream outFile;
-        std::string hist_file_name = "/home/simonb/Documents/thesis/not_sorted/hist_ns" + std::to_string(n) + ".csv";
+        std::string hist_file_name = "/home/simone/Documents/thesis/not_sorted/hist_ns" + std::to_string(event_id) + ".csv";
         outFile.open(hist_file_name);
         outFile << "pairIndex" << ',' << "pair" << ',' << "volume1" << ',' << "volume2" << ',' << "layer1" << "layer2" << ',' << '\n';
 
