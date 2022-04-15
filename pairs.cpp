@@ -14,9 +14,6 @@ std::vector<int> sort_hits(double const &particle_id, std::vector<double> &par_h
     for(int i = 0; i < par_hits_.size(); ++i) {
         if(par_hits_[i] == particle_id) {
             result.push_back(i);
-            //if(par_hits_[i+1] != particle_id) {
-            //    break;
-            //}
         }
     }
             
@@ -151,7 +148,7 @@ int main() {
     index_map[{18,10}] = 46;
     index_map[{18,12}] = 47;
 
-    int n_files = 1819;
+    int n_files = 0;
     for(int n = 0; n <= n_files; ++n) {
         std::cout << n << '\n';
         int event_id = n + 4590;
@@ -185,7 +182,6 @@ int main() {
             globalIndexes.push_back(b);
         }
         is2.close();
-        //std::cout << globalIndexes.size() << '\n';
 
         // Remove all duplicates from particle_hits
         std::vector<double> particle_types = particles_hits;
@@ -198,29 +194,30 @@ int main() {
         indexes.erase( std::unique( indexes.begin(), indexes.end() ), indexes.end() );
 
         std::vector<std::vector<int>> pair_combinations = combine(indexes);
-        //std::vector<std::vector<int>> pairIndexes;
 
-        //std::cout << particle_types.size() << '\n';
         std::vector<std::vector<int>> pairs_;
 
+        int k = 0;
+        int p = 0;
+        int l = 0;
         for(int i = 0; i < particle_types.size(); ++i) {
             std::vector<int> par_hit_indices = sort_hits(particle_types[i],particles_hits);
-            //std::cout << std::fixed;
-            //std::cout << std::setprecision(2);
-            //std::cout << particle_types[i] << '\n';
-
             for(int j = 0; j < par_hit_indices.size() - 1; ++j) {
+                ++l;
                 if(globalIndexes[par_hit_indices[j]] != globalIndexes[par_hit_indices[j+1]]) {
+                    ++p;
                     pairs_.push_back({globalIndexes[par_hit_indices[j]],globalIndexes[par_hit_indices[j+1]]});
+                } else {
+                    ++k;
                 }
             }
-            //std::cout << pairs_.size() << '\n';
-            //for(int k = 0; k < pairs_.size(); ++k) {
-            //    printVec(pairs_[i]);
-            //}
         }
+        std::cout << k << '\n';
+        std::cout << l << '\n';
+        std::cout << p << '\n';
 
         // Give to each pair its index and prepare the csv file for the histogram
+        /*
         std::ofstream outFile;
         std::string hist_file_name = "/home/simone/Documents/thesis/not_sorted/hist_ns" + std::to_string(event_id) + ".csv";
         outFile.open(hist_file_name);
@@ -228,51 +225,12 @@ int main() {
 
         //std::vector<int> pair_indexes_;
         for(int j = 0; j < pairs_.size(); ++j) {
-            //pair_indexes_.push_back(return_index(pairs_[j],pair_combinations));
             std::set<int> set_ = {pairs_[j][0],pairs_[j][1]};
-            // outFile << return_index(pairs_[j],pair_combinations) << ',' << << ',' << << ',' << << '\n';
             outFile << pairs_map[set_] << ',' << '(' + std::to_string(pairs_[j][0]) + '-' + std::to_string(pairs_[j][1]) +  ')' 
             << ',' << getkey(index_map,pairs_[j][0])[0] << ',' << getkey(index_map,pairs_[j][1])[0] << ',' 
             << getkey(index_map,pairs_[j][0])[1] << ',' << getkey(index_map,pairs_[j][1])[1] <<'\n';
         }
         outFile.close();
+        */
    }
 }
-
-/*
-        // Read the x_ns*.dat.dat file
-        std::ifstream is3;
-        is2.open(x_file_name);
-        std::vector<int> x_;
-        int c;
-
-        // Create the vector containing all the x coordinates of the hits (globalIndex column in the df)
-        for(int i = 0; is3 >> c; ++i) {
-            x_.push_back(b);
-        }
-        is3.close();
-
-        // Read the y_ns*.dat.dat file
-        std::ifstream is4;
-        is2.open(y_file_name);
-        std::vector<int> y_;
-        int d;
-
-        // Create the vector containing all the y coordinates for the hits (globalIndex column in the df)
-        for(int i = 0; is4 >> d; ++i) {
-            y_.push_back(d);
-        }
-        is4.close();
-
-        // Read the z_ns*.dat file
-        std::ifstream is5;
-        is2.open(z_file_name);
-        std::vector<int> z_;
-        int e;
-
-        // Create the vector containing all the z coordinates of the hits (globalIndex column in the df)
-        for(int i = 0; is5 >> e; ++i) {
-            z_.push_back(e);
-        }
-        is5.close();
-        */
