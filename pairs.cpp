@@ -224,7 +224,7 @@ int main() {
         std::ofstream outFile;
         std::string hist_file_name = "/home/simone/Documents/thesis/not_sorted/hist_ns" + std::to_string(event_id) + ".csv";
         outFile.open(hist_file_name);
-        outFile << "pairIndex" << ',' << "pair" << ',' << "volume1" << ',' << "volume2" << ',' << "layer1" << "layer2" << ',' << '\n';
+        outFile << "pairIndex" << ',' << "pair" << ',' << "volume1" << ',' << "volume2" << ',' << "layer1" << ',' << "layer2" <<  '\n';
 
         //std::vector<int> pair_indexes_;
         for(int j = 0; j < pairs_.size(); ++j) {

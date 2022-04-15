@@ -155,11 +155,11 @@ for i in range(len(hit_files)):
     event_indentifier = hit_files[i][48:52]
 
     # The output files are opened
-    #open_hit_file = open(path + "not_sorted/par_hits_ns" + event_indentifier + ".dat", 'w')
-    #open_truth_file = open(path + "not_sorted/globalIndexes_ns" + event_indentifier + ".dat", 'w') 
-    #open_x_file = open(path + "not_sorted/x_ns" + event_indentifier + ".dat", 'w')
-    #open_y_file = open(path + "not_sorted/y_ns" + event_indentifier + ".dat", 'w')
-    #open_z_file = open(path + "not_sorted/z_ns" + event_indentifier + ".dat", 'w')
+    open_hit_file = open(path + "not_sorted/par_hits_ns" + event_indentifier + ".dat", 'w')
+    open_truth_file = open(path + "not_sorted/globalIndexes_ns" + event_indentifier + ".dat", 'w') 
+    open_x_file = open(path + "not_sorted/x_ns" + event_indentifier + ".dat", 'w')
+    open_y_file = open(path + "not_sorted/y_ns" + event_indentifier + ".dat", 'w')
+    open_z_file = open(path + "not_sorted/z_ns" + event_indentifier + ".dat", 'w')
 
     # Select the df that I'll read
     hit_df = pd.read_csv(hit_files[i])
@@ -170,7 +170,6 @@ for i in range(len(hit_files)):
     hits_per_event[event_indentifier] = len(layer_ids)
 
     # Using a map I create a series that contains the global index and another one that contains the polar angle phi
-    """
     df_size = len(layer_ids)
     phi_list = []
     indexes_list_ = []
@@ -187,20 +186,20 @@ for i in range(len(hit_files)):
     total_df_ = total_df_.rename(columns={2:'phi'})
     total_df_.sort_values(by=['phi'])
     
-    total_df_size = total_df_['particle_id'].size"""
-    #for i in range(total_df_size):
-    #    if total_df_['particle_id'][i] != 0:
-            #open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
-            #open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
-            #open_x_file.write(str(hit_df['x'][i]) + '\n')
-            #open_y_file.write(str(hit_df['y'][i]) + '\n')
-            #open_z_file.write(str(hit_df['z'][i]) + '\n')
+    total_df_size = total_df_['particle_id'].size
+    for i in range(total_df_size):
+        if total_df_['particle_id'][i] != 0:
+            open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
+            open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
+            open_x_file.write(str(hit_df['x'][i]) + '\n')
+            open_y_file.write(str(hit_df['y'][i]) + '\n')
+            open_z_file.write(str(hit_df['z'][i]) + '\n')
     
-    #open_hit_file.close()
-    #open_truth_file.close()  
-    #open_x_file.close()
-    #open_y_file.close()
-    #open_z_file.close()     
+    open_hit_file.close()
+    open_truth_file.close()  
+    open_x_file.close()
+    open_y_file.close()
+    open_z_file.close()     
 open_hpe_file = open(path + "not_sorted/hits_per_event.csv", 'w')
 for event_identifier_ in hits_per_event:
     open_hpe_file.write(event_identifier_ + ',' + str(hits_per_event[event_identifier_]) + '\n')
