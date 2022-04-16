@@ -182,6 +182,7 @@ int main() {
             globalIndexes.push_back(b);
         }
         is2.close();
+        std::cout << globalIndexes.size() << '\n';
 
         // Remove all duplicates from particle_hits
         std::vector<double> particle_types = particles_hits;
