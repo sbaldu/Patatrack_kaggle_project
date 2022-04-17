@@ -13,7 +13,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import glob
 
 #Define the path to the csv files
-path = '/home/simonb/documents/thesis/'
+path = '/home/simone/Documents/thesis/'
 
 # Put the files into lists to read them
 hit_files = glob.glob(path+'train_3/event00000*-hits.csv')
@@ -22,9 +22,9 @@ truth_files = glob.glob(path+'train_3/event00000*-truth.csv')
 
 # Read the dataframes from the first csv file
 #hits_ = pd.read_csv(hit_files[0])
-hits_ = pd.read_csv(path+'train_3/event000004591-hits.csv')
+hits_ = pd.read_csv(path+'train_3/event000004590-hits.csv')
 particles_ = pd.read_csv(par_files[0])
-truth_ = pd.read_csv(path+'train_3/event000004591-truth.csv')
+truth_ = pd.read_csv(path+'train_3/event000004590-truth.csv')
 
 print('Hits')
 print(hits_)

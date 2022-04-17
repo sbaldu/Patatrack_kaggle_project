@@ -21,12 +21,12 @@ print(len(pairs_files))     # why only 1320?
 pairs_files.sort()
 
 # let's start with the first file 
-#dataframes = [pd.read_csv(pairs_files[0]),pd.read_csv(pairs_files[1])]
-#print(pd.read_csv(pairs_files[0]))
-#print(pd.read_csv(pairs_files[1]))
-#first_pairs_df = pd.concat(dataframes)
-first_pairs_df = pd.read_csv(pairs_files[1000])
-print(pairs_files[1000])
+dataframes = [pd.read_csv(pairs_files[0]),pd.read_csv(pairs_files[1])]
+print(pd.read_csv(pairs_files[0]))
+print(pd.read_csv(pairs_files[1]))
+first_pairs_df = pd.concat(dataframes, ignore_index=True, axis=0)
+# first_pairs_df = pd.read_csv(pairs_files[1])
+print(pairs_files[1])
 print(first_pairs_df)
 col = pd.DataFrame(first_pairs_df['pairIndex'])
 plt.hist(col.values, bins=1000)
