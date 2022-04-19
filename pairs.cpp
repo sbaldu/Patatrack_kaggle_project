@@ -147,7 +147,7 @@ int main() {
     index_map[{18,10}] = 46;
     index_map[{18,12}] = 47;
 
-    int n_files = 0;
+    int n_files = 1819;
     for(int n = 0; n <= n_files; ++n) {
         std::cout << n << '\n';
         int event_id = n + 4590;
@@ -196,17 +196,18 @@ int main() {
 
         std::vector<std::vector<int>> pairs_;
 
+        /*
         int h = 0;
         int g = 0;
         int f = 0;
         int d = 0;
         int r = 0;
-        int qua = 0;
+        int qua = 0;*/
         for(int i = 0; i < particle_types.size(); ++i) {
             std::vector<int> par_hit_indices = sort_hits(particle_types[i],particles_hits);
             for(int j = 0; j < par_hit_indices.size() - 1; ++j) {
                 if(globalIndexes[par_hit_indices[j]] != globalIndexes[par_hit_indices[j+1]]) {
-                    if(globalIndexes[par_hit_indices[j+1]] == 11 || globalIndexes[par_hit_indices[j+1]] == 12 || globalIndexes[par_hit_indices[j+1]] == 13 ||
+                    /*if(globalIndexes[par_hit_indices[j+1]] == 11 || globalIndexes[par_hit_indices[j+1]] == 12 || globalIndexes[par_hit_indices[j+1]] == 13 ||
                     globalIndexes[par_hit_indices[j+1]] == 14 || globalIndexes[par_hit_indices[j+1]] == 15 || globalIndexes[par_hit_indices[j+1]] == 16 ||
                     globalIndexes[par_hit_indices[j+1]] == 17) {
                         ++f;
@@ -221,9 +222,9 @@ int main() {
                     }
                     if(globalIndexes[par_hit_indices[j]] == 4 &&  globalIndexes[par_hit_indices[j+1]] == 0) {
                         ++qua;
-                    }
+                    }*/
                     pairs_.push_back({globalIndexes[par_hit_indices[j]],globalIndexes[par_hit_indices[j+1]]});  
-                } else {
+                /*} else {
                     if(globalIndexes[par_hit_indices[j+1]] == 11 || globalIndexes[par_hit_indices[j+1]] == 12 || globalIndexes[par_hit_indices[j+1]] == 13 ||
                     globalIndexes[par_hit_indices[j+1]] == 14 || globalIndexes[par_hit_indices[j+1]] == 15 || globalIndexes[par_hit_indices[j+1]] == 16 ||
                     globalIndexes[par_hit_indices[j+1]] == 17) {
@@ -233,31 +234,18 @@ int main() {
                     globalIndexes[par_hit_indices[j+1]] == 7 || globalIndexes[par_hit_indices[j+1]] == 8 || globalIndexes[par_hit_indices[j+1]] == 9 ||
                     globalIndexes[par_hit_indices[j+1]] == 10) {
                         ++g;
-                    }
+                    }*/
                 }
             }
         }
-        std::cout << h << '\n';
+        /*std::cout << h << '\n';
         std::cout << g << '\n';
         std::cout << f << '\n';
         std::cout << d << '\n';
         std::cout << r << '\n';
-        std::cout << qua << '\n';
+        std::cout << qua << '\n';*/
 
-        std::ofstream outFile;
-        std::string hist_file_name = "/home/simone/Documents/thesis/not_sorted/test_hist_ns.csv";
-        outFile.open(hist_file_name);
-        outFile <<  "pair" << ',' << "volume1" << ',' << "volume2" << ',' << "layer1" << ',' << "layer2" <<  '\n';
-
-        //std::vector<int> pair_indexes_;
-        for(int j = 0; j < pairs_.size(); ++j) {
-            outFile << '(' + std::to_string(pairs_[j][0]) + '-' + std::to_string(pairs_[j][1]) +  ')' 
-            << ',' << getkey(index_map,pairs_[j][0])[0] << ',' << getkey(index_map,pairs_[j][1])[0] << ',' 
-            << getkey(index_map,pairs_[j][0])[1] << ',' << getkey(index_map,pairs_[j][1])[1] << '\n';
-        }
-        outFile.close();
         // Give to each pair its index and prepare the csv file for the histogram
-        /*
         std::ofstream outFile;
         std::string hist_file_name = "/home/simone/Documents/thesis/not_sorted/hist_ns" + std::to_string(event_id) + ".csv";
         outFile.open(hist_file_name);
@@ -271,6 +259,5 @@ int main() {
             << getkey(index_map,pairs_[j][0])[1] << ',' << getkey(index_map,pairs_[j][1])[1] <<'\n';
         }
         outFile.close();
-        */
    }
 }

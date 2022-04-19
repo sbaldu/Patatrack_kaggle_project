@@ -21,16 +21,21 @@ print(len(pairs_files))     # why only 1320?
 pairs_files.sort()
 
 # let's start with the first file 
-#dataframes = [pd.read_csv(pairs_files[0]),pd.read_csv(pairs_files[1])]
-#print(pd.read_csv(pairs_files[0]))
-#print(pd.read_csv(pairs_files[1]))
-#first_pairs_df = pd.concat(dataframes, ignore_index=True, axis=0)
 first_pairs_df = pd.read_csv(pairs_files[0])
-print(pairs_files[0])
 print(first_pairs_df)
 col = pd.DataFrame(first_pairs_df['pairIndex'])
-plt.hist(col.values, bins=1000)
-plt.show()      # So far so good
+print(type(first_pairs_df['volume1'][0]))
+
+# create a column with the volume pairs
+vol_pair_column = []
+for i in range(len(col)):
+    set_ = {first_pairs_df['volume1'][i],first_pairs_df['volume2'][i]}
+    vol_pair_column.append(set_)
+
+vol_pair_column = pd.Series(vol_pair_column)
+first_pairs_df = pd.concat([first_pairs_df,vol_pair_column],axis=1)
+first_pairs_df = first_pairs_df.rename(columns={0:'volPairs'})
+print(first_pairs_df)
 
 # Count the pairs for vol combination (credit to Angie)
 countValues = first_pairs_df['pair'].value_counts()
@@ -40,30 +45,30 @@ print(countValues)
 pairs_ = {}
 count7 = 0
 for i in range(col.size):
-    if (first_pairs_df['volume1'][i] == 7):
+    if (7 in first_pairs_df['volPairs'][i]):
         count7 += 1
         if str(first_pairs_df['pair'][i]) in pairs_.keys():
             pairs_[str(first_pairs_df['pair'][i])] += 1
         else: 
             pairs_[str(first_pairs_df['pair'][i])] = 1
-print(count7)
+print('hits from a volume to volume 7 = ' + str(count7)) # 7459
 plt.bar(pairs_.keys(), pairs_.values())
 plt.xticks(rotation = 45) 
 figsize = (20, 20)
 #plt.yscale("log")
 plt.show()
 
-# same things for volume 9
+# same thing for volume 9
 pairs__ = {}
 count9 = 0
 for i in range(col.size):
-    if (first_pairs_df['volume2'][i] == 9):
+    if (9 in first_pairs_df['volPairs'][i]):
         count9 += 1
         if str(first_pairs_df['pair'][i]) in pairs__.keys():
             pairs__[str(first_pairs_df['pair'][i])] += 1
         else: 
             pairs__[str(first_pairs_df['pair'][i])] = 1
-print(count9)
+print('hits from a volume to volume 9 = ' + str(count9))
 plt.bar(pairs__.keys(), pairs__.values())
 plt.xticks(rotation = 45) 
 figsize = (20, 20)
@@ -109,7 +114,7 @@ volumes = [7,8,9,12,13,14,16,17,18]
 vol_sort_pairs = {}
 for vol in volumes:
     for i in range(col.size):
-        if (first_pairs_df['volume1'][i] == vol):
+        if (vol in first_pairs_df['volPairs'][i]):
             if str(first_pairs_df['pair'][i]) in vol_sort_pairs.keys():
                 vol_sort_pairs[str(first_pairs_df['pair'][i])] += 1
             else: 
@@ -130,8 +135,8 @@ plt.show()
 # plot the count of volume pairs
 mycounts = []
 
-for i in range(18):
-    for j in range(18):
+for i in range(19):
+    for j in range(19):
         x = sum((first_pairs_df.volume1 == i) & (first_pairs_df.volume2 == j))
         ttuple=(i,j,x)
         if x!=0: 
@@ -149,3 +154,9 @@ plt.title("Volume Counts")
 plt.xlabel("volumes")
 plt.ylabel("counts")
 plt.show()
+
+
+#dataframes = [pd.read_csv(pairs_files[0]),pd.read_csv(pairs_files[1])]
+#print(pd.read_csv(pairs_files[0]))
+#print(pd.read_csv(pairs_files[1]))
+#first_pairs_df = pd.concat(dataframes, ignore_index=True, axis=0)
