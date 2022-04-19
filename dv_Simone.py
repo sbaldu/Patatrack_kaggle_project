@@ -43,7 +43,7 @@ z_col = hits_['z'].values.tolist()
 
 # Define the functions returning the indexes
 def hit_index(hit_id):                              # Define a function that takes an hit_id and returns the index in the column series
-    hits_list = hits_['hit_id'].values.tolist()     
+    hits_list = hits_['hit_id'].values.tolist()
     index = hits_list.index(hit_id)
     return index
 
@@ -58,7 +58,7 @@ def sort_hits(particle_id):
     for i in range(truth_['particle_id'].size):
         if truth_['particle_id'][i] == particle_id:
             list_hits.append(truth_['hit_id'][i])
-            
+
     return list_hits
 print(sort_hits(585476747651186688))
 def vis_particle(particle_id):
@@ -211,7 +211,6 @@ def write_to_dat(event_):       # event_ should be the path to the file written 
     y_col = event['y'].values.tolist()
     z_col = event['z'].values.tolist()
     length= len(lay_col)
-    
     for i in range(length):
         open_file.write(str(layerGlobalIndex(vol_col[i],lay_col[i])) + '\n')
     open_file.close()
@@ -219,13 +218,13 @@ write_to_dat(hit_files[10])
 
 def write_to_csv(event_):       # Same thing but it writes the data to a csv file
     event = pd.read_csv(event_)
-    
+
     # Define a unique name for the file
     event_ = event_.split(sep='/')
     name = event_[6]
     name = name.split(sep='.')
     open_file = open(name[0] + '.csv', 'a')
-    
+
     #hitid_col = event['hit_id'].values.tolist()
     lay_col = event['layer_id'].values.tolist()
     vol_col = event['volume_id'].values.tolist()

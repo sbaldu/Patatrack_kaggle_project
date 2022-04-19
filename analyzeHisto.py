@@ -38,13 +38,33 @@ print(countValues)
 
 # now we sort all the hist corresponding to volume 7
 pairs_ = {}
+count7 = 0
 for i in range(col.size):
     if (first_pairs_df['volume1'][i] == 7):
+        count7 += 1
         if str(first_pairs_df['pair'][i]) in pairs_.keys():
             pairs_[str(first_pairs_df['pair'][i])] += 1
         else: 
             pairs_[str(first_pairs_df['pair'][i])] = 1
+print(count7)
 plt.bar(pairs_.keys(), pairs_.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
+# same things for volume 9
+pairs__ = {}
+count9 = 0
+for i in range(col.size):
+    if (first_pairs_df['volume2'][i] == 9):
+        count9 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print(count9)
+plt.bar(pairs__.keys(), pairs__.values())
 plt.xticks(rotation = 45) 
 figsize = (20, 20)
 #plt.yscale("log")
