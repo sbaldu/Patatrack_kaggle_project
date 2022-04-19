@@ -16,7 +16,7 @@ std::vector<int> sort_hits(double const &particle_id, std::vector<double> &par_h
             result.push_back(i);
         }
     }
-            
+
     return result;
 }
 
@@ -43,7 +43,7 @@ std::vector<std::vector<int>> combine(std::vector<int> const &indexes) {
 
 int return_index(std::vector<int> const &pair, std::vector<std::vector<int>> const &pairs) {
     std::vector<int> inv_pair{pair[1],pair[0]};
-    
+
     for(int i = 0; i < pairs.size(); ++i) {
         if((pair == pairs[i]) || (inv_pair == pairs[i])) {
             return i;
@@ -79,7 +79,7 @@ std::vector<int> getkey(std::map<std::vector<int>, int> index_map_, int value_) 
 int main() {
     // I define the map that links the pairs and their indexes
     std::map<std::set<int>, int> pairs_map;
-    
+
     // Fill a vector with all the possible pairs
     std::vector<int> indexes_;
     int max_index = 47;
@@ -95,7 +95,6 @@ int main() {
         set_.insert(possible_pairs[i][1]);
         pairs_map[set_] = i;
     }
-    
     // Define a map for the layer global index
     std::map<std::vector<int>, int> index_map;
 
@@ -148,7 +147,7 @@ int main() {
     index_map[{18,10}] = 46;
     index_map[{18,12}] = 47;
 
-    int n_files = 0;
+    int n_files = 1819;
     for(int n = 0; n <= n_files; ++n) {
         std::cout << n << '\n';
         int event_id = n + 4590;
@@ -182,7 +181,6 @@ int main() {
             globalIndexes.push_back(b);
         }
         is2.close();
-        std::cout << globalIndexes.size() << '\n';
 
         // Remove all duplicates from particle_hits
         std::vector<double> particle_types = particles_hits;
@@ -198,27 +196,56 @@ int main() {
 
         std::vector<std::vector<int>> pairs_;
 
-        int k = 0;
-        int p = 0;
-        int l = 0;
+        /*
+        int h = 0;
+        int g = 0;
+        int f = 0;
+        int d = 0;
+        int r = 0;
+        int qua = 0;*/
         for(int i = 0; i < particle_types.size(); ++i) {
             std::vector<int> par_hit_indices = sort_hits(particle_types[i],particles_hits);
             for(int j = 0; j < par_hit_indices.size() - 1; ++j) {
-                ++l;
                 if(globalIndexes[par_hit_indices[j]] != globalIndexes[par_hit_indices[j+1]]) {
-                    ++p;
-                    pairs_.push_back({globalIndexes[par_hit_indices[j]],globalIndexes[par_hit_indices[j+1]]});
-                } else {
-                    ++k;
+                    /*if(globalIndexes[par_hit_indices[j+1]] == 11 || globalIndexes[par_hit_indices[j+1]] == 12 || globalIndexes[par_hit_indices[j+1]] == 13 ||
+                    globalIndexes[par_hit_indices[j+1]] == 14 || globalIndexes[par_hit_indices[j+1]] == 15 || globalIndexes[par_hit_indices[j+1]] == 16 ||
+                    globalIndexes[par_hit_indices[j+1]] == 17) {
+                        ++f;
+                    }
+                    if(globalIndexes[par_hit_indices[j+1]] == 4 || globalIndexes[par_hit_indices[j+1]] == 5 || globalIndexes[par_hit_indices[j+1]] == 6 ||
+                    globalIndexes[par_hit_indices[j+1]] == 7 || globalIndexes[par_hit_indices[j+1]] == 8 || globalIndexes[par_hit_indices[j+1]] == 9 ||
+                    globalIndexes[par_hit_indices[j+1]] == 10) {
+                        ++d;
+                    }
+                    if(globalIndexes[par_hit_indices[j]] == 11 &&  globalIndexes[par_hit_indices[j+1]] == 0) {
+                        ++r;
+                    }
+                    if(globalIndexes[par_hit_indices[j]] == 4 &&  globalIndexes[par_hit_indices[j+1]] == 0) {
+                        ++qua;
+                    }*/
+                    pairs_.push_back({globalIndexes[par_hit_indices[j]],globalIndexes[par_hit_indices[j+1]]});  
+                /*} else {
+                    if(globalIndexes[par_hit_indices[j+1]] == 11 || globalIndexes[par_hit_indices[j+1]] == 12 || globalIndexes[par_hit_indices[j+1]] == 13 ||
+                    globalIndexes[par_hit_indices[j+1]] == 14 || globalIndexes[par_hit_indices[j+1]] == 15 || globalIndexes[par_hit_indices[j+1]] == 16 ||
+                    globalIndexes[par_hit_indices[j+1]] == 17) {
+                        ++h;
+                    }
+                    if(globalIndexes[par_hit_indices[j+1]] == 4 || globalIndexes[par_hit_indices[j+1]] == 5 || globalIndexes[par_hit_indices[j+1]] == 6 ||
+                    globalIndexes[par_hit_indices[j+1]] == 7 || globalIndexes[par_hit_indices[j+1]] == 8 || globalIndexes[par_hit_indices[j+1]] == 9 ||
+                    globalIndexes[par_hit_indices[j+1]] == 10) {
+                        ++g;
+                    }*/
                 }
             }
         }
-        std::cout << k << '\n';
-        std::cout << l << '\n';
-        std::cout << p << '\n';
+        /*std::cout << h << '\n';
+        std::cout << g << '\n';
+        std::cout << f << '\n';
+        std::cout << d << '\n';
+        std::cout << r << '\n';
+        std::cout << qua << '\n';*/
 
         // Give to each pair its index and prepare the csv file for the histogram
-        /*
         std::ofstream outFile;
         std::string hist_file_name = "/home/simone/Documents/thesis/not_sorted/hist_ns" + std::to_string(event_id) + ".csv";
         outFile.open(hist_file_name);
@@ -232,6 +259,5 @@ int main() {
             << getkey(index_map,pairs_[j][0])[1] << ',' << getkey(index_map,pairs_[j][1])[1] <<'\n';
         }
         outFile.close();
-        */
    }
 }
