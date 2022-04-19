@@ -16,7 +16,7 @@ std::vector<int> sort_hits(double const &particle_id, std::vector<double> &par_h
             result.push_back(i);
         }
     }
-            
+
     return result;
 }
 
@@ -43,7 +43,7 @@ std::vector<std::vector<int>> combine(std::vector<int> const &indexes) {
 
 int return_index(std::vector<int> const &pair, std::vector<std::vector<int>> const &pairs) {
     std::vector<int> inv_pair{pair[1],pair[0]};
-    
+
     for(int i = 0; i < pairs.size(); ++i) {
         if((pair == pairs[i]) || (inv_pair == pairs[i])) {
             return i;
@@ -79,7 +79,7 @@ std::vector<int> getkey(std::map<std::vector<int>, int> index_map_, int value_) 
 int main() {
     // I define the map that links the pairs and their indexes
     std::map<std::set<int>, int> pairs_map;
-    
+
     // Fill a vector with all the possible pairs
     std::vector<int> indexes_;
     int max_index = 47;
@@ -95,7 +95,6 @@ int main() {
         set_.insert(possible_pairs[i][1]);
         pairs_map[set_] = i;
     }
-    
     // Define a map for the layer global index
     std::map<std::vector<int>, int> index_map;
 

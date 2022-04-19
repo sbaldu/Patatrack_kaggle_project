@@ -21,16 +21,20 @@ print(len(pairs_files))     # why only 1320?
 pairs_files.sort()
 
 # let's start with the first file 
-dataframes = [pd.read_csv(pairs_files[0]),pd.read_csv(pairs_files[1])]
-print(pd.read_csv(pairs_files[0]))
-print(pd.read_csv(pairs_files[1]))
-first_pairs_df = pd.concat(dataframes, ignore_index=True, axis=0)
-# first_pairs_df = pd.read_csv(pairs_files[1])
-print(pairs_files[1])
+#dataframes = [pd.read_csv(pairs_files[0]),pd.read_csv(pairs_files[1])]
+#print(pd.read_csv(pairs_files[0]))
+#print(pd.read_csv(pairs_files[1]))
+#first_pairs_df = pd.concat(dataframes, ignore_index=True, axis=0)
+first_pairs_df = pd.read_csv(pairs_files[0])
+print(pairs_files[0])
 print(first_pairs_df)
 col = pd.DataFrame(first_pairs_df['pairIndex'])
 plt.hist(col.values, bins=1000)
 plt.show()      # So far so good
+
+# Count the pairs for vol combination (credit to Angie)
+countValues = first_pairs_df['pair'].value_counts()
+print(countValues)
 
 # now we sort all the hist corresponding to volume 7
 pairs_ = {}
@@ -101,4 +105,27 @@ plt.bar(vol_sort_pairs.keys(), vol_sort_pairs.values())
 plt.xticks(rotation = 45) 
 figsize = (20, 20)
 #plt.yscale("log")
+plt.show()
+
+# plot the count of volume pairs
+mycounts = []
+
+for i in range(18):
+    for j in range(18):
+        x = sum((first_pairs_df.volume1 == i) & (first_pairs_df.volume2 == j))
+        ttuple=(i,j,x)
+        if x!=0: 
+            mycounts.append(ttuple)         
+#print(mycounts)
+
+df1 = pd.DataFrame(mycounts, columns=['volume1', 'volume2', 'counts'])
+volume1 = 'volume1'
+volume2 = 'volume2'
+df1['Volumes'] = df1['volume1'].map(str) + '-' + df1['volume2'].map(str)
+df1
+
+ax1 = df1.plot.bar(x='Volumes', y='counts', rot=60)
+plt.title("Volume Counts")
+plt.xlabel("volumes")
+plt.ylabel("counts")
 plt.show()
