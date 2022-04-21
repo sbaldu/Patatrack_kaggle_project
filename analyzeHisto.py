@@ -68,14 +68,14 @@ for i in range(col.size):
             pairs__[str(first_pairs_df['pair'][i])] += 1
         else: 
             pairs__[str(first_pairs_df['pair'][i])] = 1
-print('hits from a volume to volume 9 = ' + str(count9))
+print('hits from a volume to volume 9 = ' + str(count9)) # 8618
 plt.bar(pairs__.keys(), pairs__.values())
 plt.xticks(rotation = 45) 
 figsize = (20, 20)
 #plt.yscale("log")
 plt.show()
 
-# let's try to make an histogram with all the pairs exept the ones with 0 occurences
+# let's try to make an histogram with all the pairs except the ones with 0 occurences
 all_pairs_ = {}
 for i in range(col.size):
     if str(first_pairs_df['pair'][i]) in all_pairs_.keys():
@@ -154,9 +154,3 @@ plt.title("Volume Counts")
 plt.xlabel("volumes")
 plt.ylabel("counts")
 plt.show()
-
-
-#dataframes = [pd.read_csv(pairs_files[0]),pd.read_csv(pairs_files[1])]
-#print(pd.read_csv(pairs_files[0]))
-#print(pd.read_csv(pairs_files[1]))
-#first_pairs_df = pd.concat(dataframes, ignore_index=True, axis=0)
