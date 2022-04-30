@@ -9,6 +9,8 @@
 #include "CUDADataFormats/TrackingRecHit2DHeterogeneous.h"
 #include <fstream>
 
+// Guarda come sono costruiti i rec hits, come riempiono i dati. Creane uno per ogni hit
+
 std::string path = "/home/simone/Documents/thesis/not_sorted/";
 int n_events = 1770;
 
