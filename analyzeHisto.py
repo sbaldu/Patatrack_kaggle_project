@@ -58,6 +58,23 @@ figsize = (20, 20)
 #plt.yscale("log")
 plt.show()
 
+# same thing for volume 8
+pairs__ = {}
+count8 = 0
+for i in range(col.size):
+    if (8 in first_pairs_df['volPairs'][i]):
+        count8 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print('hits from a volume to volume 8 = ' + str(count8))
+plt.bar(pairs__.keys(), pairs__.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
 # same thing for volume 9
 pairs__ = {}
 count9 = 0
@@ -69,6 +86,108 @@ for i in range(col.size):
         else: 
             pairs__[str(first_pairs_df['pair'][i])] = 1
 print('hits from a volume to volume 9 = ' + str(count9)) # 8618
+plt.bar(pairs__.keys(), pairs__.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
+# same thing for volume 12
+pairs__ = {}
+count12 = 0
+for i in range(col.size):
+    if (12 in first_pairs_df['volPairs'][i]):
+        count12 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print('hits from a volume to volume 12 = ' + str(count12)) # 8618
+plt.bar(pairs__.keys(), pairs__.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
+# same thing for volume 13
+pairs__ = {}
+count13 = 0
+for i in range(col.size):
+    if (13 in first_pairs_df['volPairs'][i]):
+        count13 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print('hits from a volume to volume 13 = ' + str(count13)) # 8618
+plt.bar(pairs__.keys(), pairs__.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
+# same thing for volume 14
+pairs__ = {}
+count14 = 0
+for i in range(col.size):
+    if (14 in first_pairs_df['volPairs'][i]):
+        count14 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print('hits from a volume to volume 14 = ' + str(count14)) # 8618
+plt.bar(pairs__.keys(), pairs__.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
+# same thing for volume 16
+pairs__ = {}
+count16 = 0
+for i in range(col.size):
+    if (16 in first_pairs_df['volPairs'][i]):
+        count16 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print('hits from a volume to volume 16 = ' + str(count16)) # 8618
+plt.bar(pairs__.keys(), pairs__.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
+# same thing for volume 17
+pairs__ = {}
+count17 = 0
+for i in range(col.size):
+    if (17 in first_pairs_df['volPairs'][i]):
+        count17 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print('hits from a volume to volume 17 = ' + str(count17)) # 8618
+plt.bar(pairs__.keys(), pairs__.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
+# same thing for volume 18
+pairs__ = {}
+count18 = 0
+for i in range(col.size):
+    if (18 in first_pairs_df['volPairs'][i]):
+        count18 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print('hits from a volume to volume 18 = ' + str(count18)) # 8618
 plt.bar(pairs__.keys(), pairs__.values())
 plt.xticks(rotation = 45) 
 figsize = (20, 20)
