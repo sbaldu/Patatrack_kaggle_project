@@ -41,6 +41,23 @@ print(first_pairs_df)
 countValues = first_pairs_df['pair'].value_counts()
 print(countValues)
 
+# only hits in blue volumes
+pairs_bl = {}
+count_bl = 0
+for i in range(col.size):
+    if (first_pairs_df['volume1'][i] == 8 and first_pairs_df['volume2'][i] == 8) or (first_pairs_df['volume1'][i] == 7 and first_pairs_df['volume2'][i] == 8) or (first_pairs_df['volume1'][i] == 8 and first_pairs_df['volume2'][i] == 9):
+        count_bl += 1
+        if str(first_pairs_df['pair'][i]) in pairs_bl.keys():
+            pairs_bl[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs_bl[str(first_pairs_df['pair'][i])] = 1
+print('hits blue = ' + str(count_bl)) # 7459
+plt.bar(pairs_bl.keys(), pairs_bl.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
 # now we sort all the hist corresponding to volume 7
 pairs_ = {}
 count7 = 0
