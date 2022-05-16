@@ -36,6 +36,7 @@ compactLayerId = hits['layer_id']/2 -1
 #Set maxima
 maxLayerId = hits['layer_id'].max()
 maxVolId = hits['volume_id'].max() -7
+print(maxVolId)
 
 #Make list of global indices
 hits['global_index'] = maxVolId * (maxLayerId+1) + compactLayerId
@@ -61,7 +62,7 @@ def return_index(pair,pairs):
         if pair == pairs[i]:
             return i
 
-print(return_index([7,2],list))
+#print(return_index([7,2],list))
 
 #Felice notes
 ### layer id in dataframe
