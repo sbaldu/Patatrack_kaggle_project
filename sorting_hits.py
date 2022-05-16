@@ -14,7 +14,7 @@ from mpl_toolkits.mplot3d import Axes3D
 ##Reading in files + pulling important colns
 
 ###read in truth, just take pid & hid
-truth = pd.read_csv('/Users/pfudolig/patatrack/trackml-library-master/trackml/train_1/event000001884-truth.csv')
+truth = pd.read_csv('/Users/pfudolig/patatrack/trackml-library-master/trackmlrepo/Patatrack_kaggle_project/train_1/event000001884-truth.csv')
 df_truth = pd.DataFrame(data=truth.loc[:,["particle_id","hit_id"]])
 #print(df_truth.head(5))
 
@@ -23,7 +23,7 @@ df_truth = pd.DataFrame(data=truth.loc[:,["particle_id","hit_id"]])
 grouped_df = df_truth.groupby("particle_id")
 grouped_lists = grouped_df["hit_id"].apply(list)
 grouped_lists = grouped_lists.reset_index()
-#print(grouped_lists)
+print(grouped_lists)
 
 ###making sorted hits into dataframe
 sorted = pd.DataFrame(data=grouped_lists)
@@ -31,7 +31,7 @@ sorted = pd.DataFrame(data=grouped_lists)
 #attach the column hit_id to other transverse
 
 ###read in particles
-ev_particles = pd.read_csv('/Users/pfudolig/patatrack/trackml-library-master/trackml/train_1/event000001884-particles.csv')
+ev_particles = pd.read_csv('//Users/pfudolig/patatrack/trackml-library-master/trackmlrepo/Patatrack_kaggle_project/train_1/event000001884-particles.csv')
 df_part = pd.DataFrame(data=ev_particles)
 #print(ev_particles.head(3))
 
@@ -40,7 +40,7 @@ pdf_new = df_part[['particle_id','q','nhits']].copy()
 #print(pdf_new.head(3))
 
 ###read in hits
-hitsin3d = pd.read_csv('/Users/pfudolig/patatrack/trackml-library-master/trackml/train_1/event000001884-hits.csv')
+hitsin3d = pd.read_csv('/Users/pfudolig/patatrack/trackml-library-master/trackmlrepo/Patatrack_kaggle_project/train_1/event000001884-hits.csv')
 df_hits = pd.DataFrame(data=hitsin3d)
 #print(hitsin3d.head(3))
 
@@ -84,7 +84,7 @@ single = pd.DataFrame(data=both.loc[:,["particle_id","hit_id","x","y","z"]])
 
 
 
-
+'''
 ##Task 2: Create a visualization function that takes particleId and visualizes only the hits belonging to that particle
 
 ##ask for pid and take it in
@@ -354,3 +354,4 @@ def vis_same_layer(vol_,lay_):
     plt.show()
     #plt.savefig(mypath + "All-hits-layer-" + str(lay_) + "-vol-" + str(vol_) + "_rotated.png")
 #vis_same_layer(7,2)
+'''
