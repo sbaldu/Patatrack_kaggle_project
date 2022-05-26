@@ -9,7 +9,8 @@ track_ids = set(df_truth.track_id)
 #print(track_ids)
 #print(len(track_ids))
 
-track_interest = track_ids.pop()
+track_interest = random.choice(tuple(track_ids))
+print(track_interest)
 my_mask = df_truth.track_id == track_interest
 #print(my_mask)
 
