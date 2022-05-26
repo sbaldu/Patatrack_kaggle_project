@@ -152,14 +152,14 @@ df_truth = pd.read_csv("~/CERN/new_data_train_2.csv")
 #print(df_truth.track_id)
 
 track_ids = set(df_truth.track_id)
-print("previoustrackids\n",track_ids)
+#print("previoustrackids\n",track_ids)
 #print(len(track_ids))
 
 track_interest = track_ids.pop()
 my_mask = df_truth.track_id == track_interest
-print("mask\n",my_mask)
-print("trackinterest\n", track_interest)
-print("trackid\n",track_ids)
+#print("mask\n",my_mask)
+#print("trackinterest\n", track_interest)
+#print("trackid\n",track_ids)
 
 df_truth = df_truth[my_mask]
 
@@ -173,7 +173,7 @@ df_truth2 = df_truth.drop(index = index_to_drop)
 df_truth["particle_id"] = df_truth.track_id
 #print(df_truth2)
 
-print(score_event(df_truth,df_truth2))
+#print(score_event(df_truth,df_truth2))
 #print(df_hits)
 
 #looking at relationship between volume ids and scores
