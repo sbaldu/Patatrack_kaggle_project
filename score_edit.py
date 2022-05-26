@@ -145,9 +145,9 @@ track_ids = set(df_truth_track.track_id)
 track_interest = track_ids.pop()
 my_mask = df_truth_track.track_id == track_interest
 #print(my_mask)
-
 #print(df_truth_track[my_mask])
 
+# using the real data 
 df_truth = pd.read_csv("~/CERN/new_data_train_2.csv")
 #print(df_truth.track_id)
 
@@ -155,11 +155,10 @@ track_ids = set(df_truth.track_id)
 #print("previoustrackids\n",track_ids)
 #print(len(track_ids))
 
-track_interest = track_ids.pop()
+track_interest = random.choice(tuple(track_ids))
+print(track_interest)
 my_mask = df_truth.track_id == track_interest
-#print("mask\n",my_mask)
-#print("trackinterest\n", track_interest)
-#print("trackid\n",track_ids)
+#print(my_mask)
 
 df_truth = df_truth[my_mask]
 
@@ -185,14 +184,27 @@ df_truth_volume_table = pd.read_csv("/Users/angies/Desktop/Geneva Study Abroad/C
 volume_array= []
 score_array = []
 
-for trial in range(5):
-    index_to_drop = random.choices(df_truth.index, k=3)
+for trial in range(10):
+    index_to_drop = random.choices(df_truth.index, k=1)
     df_truth2 = df_truth.drop(index = index_to_drop)
-    df_truth["particle_id"] = df_truth.track_id
-    #print(df_truth2)
+    df_truth["particle_id"] = df_truth.track_id  # score function expects particle_id not track_id, set it to be called particle_id
     score_array.append(score_event(df_truth,df_truth2))
-    for id in index_to_drop:
-        volume_array.append(df_truth_volume_table[df_truth_volume_table.hit_id == id].volume_id)
+    volume_array.append(int(df_truth_volume_table[df_truth_volume_table.hit_id == index_to_drop[0]].volume_id))
 
 print(volume_array)
 print(score_array)
+
+import matplotlib.pyplot as plt 
+
+volume_list = list(set(volume_array))  # get a list of volumes with no duplicates 
+scores = []
+
+for volume_id in volume_list:
+    list_scores_in_volume=[]
+    for volume,score in zip(volume_array, score_array): 
+        if volume == volume_id: 
+            list_scores_in_volume.append(score)
+    scores.append(np.mean(list_scores_in_volume))
+
+plt.bar(volume_list,scores)
+plt.show()
