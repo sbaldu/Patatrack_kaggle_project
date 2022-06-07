@@ -109,8 +109,8 @@ r_layer14 = []
 
 #for each layer, appends z and r data to arrays to plot separately
 def add_col(globalIndex,hits):
+    #actually might not even need this but good to have
     for i in range(hits.shape[0]): #create a new column for manually inputted global indices
-        #print(i)
         key = (hits.iloc[i, 4], hits.iloc[i, 5])
         hits.iloc[i,8] = globalIndex[key]
 

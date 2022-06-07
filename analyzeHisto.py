@@ -41,6 +41,23 @@ print(first_pairs_df)
 countValues = first_pairs_df['pair'].value_counts()
 print(countValues)
 
+# only hits in blue volumes
+pairs_bl = {}
+count_bl = 0
+for i in range(col.size):
+    if (first_pairs_df['volume1'][i] == 8 and first_pairs_df['volume2'][i] == 8) or (first_pairs_df['volume1'][i] == 7 and first_pairs_df['volume2'][i] == 8) or (first_pairs_df['volume1'][i] == 8 and first_pairs_df['volume2'][i] == 9):
+        count_bl += 1
+        if str(first_pairs_df['pair'][i]) in pairs_bl.keys():
+            pairs_bl[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs_bl[str(first_pairs_df['pair'][i])] = 1
+print('hits blue = ' + str(count_bl)) # 7459
+plt.bar(pairs_bl.keys(), pairs_bl.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
 # now we sort all the hist corresponding to volume 7
 pairs_ = {}
 count7 = 0
@@ -58,6 +75,23 @@ figsize = (20, 20)
 #plt.yscale("log")
 plt.show()
 
+# same thing for volume 8
+pairs__ = {}
+count8 = 0
+for i in range(col.size):
+    if (8 in first_pairs_df['volPairs'][i]):
+        count8 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print('hits from a volume to volume 8 = ' + str(count8))
+plt.bar(pairs__.keys(), pairs__.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
 # same thing for volume 9
 pairs__ = {}
 count9 = 0
@@ -69,6 +103,108 @@ for i in range(col.size):
         else: 
             pairs__[str(first_pairs_df['pair'][i])] = 1
 print('hits from a volume to volume 9 = ' + str(count9)) # 8618
+plt.bar(pairs__.keys(), pairs__.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
+# same thing for volume 12
+pairs__ = {}
+count12 = 0
+for i in range(col.size):
+    if (12 in first_pairs_df['volPairs'][i]):
+        count12 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print('hits from a volume to volume 12 = ' + str(count12)) # 8618
+plt.bar(pairs__.keys(), pairs__.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
+# same thing for volume 13
+pairs__ = {}
+count13 = 0
+for i in range(col.size):
+    if (13 in first_pairs_df['volPairs'][i]):
+        count13 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print('hits from a volume to volume 13 = ' + str(count13)) # 8618
+plt.bar(pairs__.keys(), pairs__.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
+# same thing for volume 14
+pairs__ = {}
+count14 = 0
+for i in range(col.size):
+    if (14 in first_pairs_df['volPairs'][i]):
+        count14 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print('hits from a volume to volume 14 = ' + str(count14)) # 8618
+plt.bar(pairs__.keys(), pairs__.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
+# same thing for volume 16
+pairs__ = {}
+count16 = 0
+for i in range(col.size):
+    if (16 in first_pairs_df['volPairs'][i]):
+        count16 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print('hits from a volume to volume 16 = ' + str(count16)) # 8618
+plt.bar(pairs__.keys(), pairs__.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
+# same thing for volume 17
+pairs__ = {}
+count17 = 0
+for i in range(col.size):
+    if (17 in first_pairs_df['volPairs'][i]):
+        count17 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print('hits from a volume to volume 17 = ' + str(count17)) # 8618
+plt.bar(pairs__.keys(), pairs__.values())
+plt.xticks(rotation = 45) 
+figsize = (20, 20)
+#plt.yscale("log")
+plt.show()
+
+# same thing for volume 18
+pairs__ = {}
+count18 = 0
+for i in range(col.size):
+    if (18 in first_pairs_df['volPairs'][i]):
+        count18 += 1
+        if str(first_pairs_df['pair'][i]) in pairs__.keys():
+            pairs__[str(first_pairs_df['pair'][i])] += 1
+        else: 
+            pairs__[str(first_pairs_df['pair'][i])] = 1
+print('hits from a volume to volume 18 = ' + str(count18)) # 8618
 plt.bar(pairs__.keys(), pairs__.values())
 plt.xticks(rotation = 45) 
 figsize = (20, 20)

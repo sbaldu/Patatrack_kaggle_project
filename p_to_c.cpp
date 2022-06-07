@@ -56,7 +56,7 @@ int main() {
             int y_sq = pow(y_int,2);
             int z_sq = pow(z_int,2);
             int xyz = x_sq + y_sq + z_sq;
-            int r = pow(xyz,0.5); //should i make this an array?
+            int r = pow(xyz,0.5);
             */
 
             /*
@@ -64,9 +64,9 @@ int main() {
             int LayerID = atoi(row[5].c_str());
             int MaxLayerID = 7;
             int MaxVolID = 18-7;
-            int CompactLayerID = LayerID / 2 - 1; //make this an array?
+            int CompactLayerID = LayerID / 2 - 1; 
             int global_index = MaxVolID * (MaxLayerID + 1) + CompactLayerID;
-            std::cout << global_index << " "; //looks like it just keeps reprinting, also is 88-93 for some reason
+            std::cout << global_index << " "; 
             */
             
             content.push_back(row);
@@ -85,7 +85,7 @@ int main() {
         for(int j=0; j<content[i].size(); j++) {
             std::cout << content[i][j] << " ";
         }
-        std::cout << "\n"; //new line?
+        std::cout << "\n";
     }
 */
 
