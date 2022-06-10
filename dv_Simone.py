@@ -74,9 +74,9 @@ def vis_particle(particle_id):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(z_hit_vis,x_hit_vis,y_hit_vis)
-    plt.xlabel("z")
-    plt.ylabel("x")
-    ax.set_zlabel("y")
+    plt.xlabel("z (mm)")
+    plt.ylabel("x (mm)")
+    ax.set_zlabel("y (mm)")
     plt.show()
 vis_particle(585476747651186688)
 
@@ -108,9 +108,9 @@ for i in par_hits:
     colour_index += 1
 
 ax.set_title("Visualization of the first 5 particles")
-plt.xlabel("z")
-plt.ylabel("x")
-ax.set_zlabel("y")
+plt.xlabel("z (mm)")
+plt.ylabel("x (mm)")
+ax.set_zlabel("y (mm)")
 plt.show()
 
 # Group hits by volume and layer, then visualize them
@@ -151,9 +151,9 @@ def vis_same_layer(vol_,lay_):
     ax.scatter(z_,x_,y_, label=label_)
     ax.legend()
     ax.set_title("Hits on layer " + str(lay_) + " and volume " + str(vol_))
-    plt.xlabel("z")
-    plt.ylabel("x")
-    ax.set_zlabel("y")
+    plt.xlabel("z (mm)")
+    plt.ylabel("x (mm)")
+    ax.set_zlabel("y (mm)")
     plt.xlim(-3000,3000)
     plt.show()
 
@@ -194,7 +194,7 @@ plt.ylabel("r (mm)")
 #plt.show()
 
 
-# Write hits per layer on a .dat file, so that ROOT can read it
+# Write hits per layer on a .dat file, so that C++ can read it
 def write_to_dat(event_):       # event_ should be the path to the file written as a string. The files list should be used for convenience
     event = pd.read_csv(event_)
     
@@ -239,54 +239,3 @@ def write_to_csv(event_):       # Same thing but it writes the data to a csv fil
         + str(z_col[i]) + ',' + str(layerGlobalIndex(vol_col[i],lay_col[i])) + '\n')
     open_file.close()
 #write_to_csv(hit_files[10])
-
-"""
-#Define df containing particle_ids, hit positions and vol/lay ids
-i = 2       # Right now I'm only doing it for one event. I'll add all the others later
-hit_df = pd.read_csv(hit_files[i])
-truth_df = pd.read_csv(truth_files[i])
-new_df = pd.concat([truth_df['particle_id'],np.sqrt(hit_df['x']**2 + hit_df['y']**2)
-    ,hit_df['z'],layerGlobalIndex(hit_df['volume_id'],hit_df['layer_id'])],axis=1)
-
-new_df = new_df.rename(columns={0:'r'})
-new_df = new_df.rename(columns={1:'globalIndex'})
-new_df = new_df.sort_values(by='r',ascending=True)
-new_df_len = 128182
-
-print(new_df)
-
-open_file = open("test.csv", 'w')
-
-open_file.write('particle_id,r,z,globalIndex' + '\n')
-for i in range(new_df_len):
-    open_file.write(str(new_df['particle_id'].values.tolist()[i]) + ',' + str(new_df['r'].values.tolist()[i]) + ',' + str(new_df['z'].values.tolist()[i]) + ',' + str(new_df['globalIndex'].values.tolist()[i]) + '\n')
-open_file.close()
-"""
-"""
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-
-for event in particles_ten_events:
-    ev_particles = event['particle_id'].values.tolist()
-    ev_particles.sort()
-    for particle in ev_particles:
-        if (particle in par_ids) == True:
-            particle_hits = sort_hits(particle)
-            x_10 = []
-            y_10 = []
-            z_10 = []
-            for i in particle_hits:
-                x_10.append(hits_['x'].values.tolist()[i])
-                y_10.append(hits_['y'].values.tolist()[i])
-                z_10.append(hits_['z'].values.tolist()[i])
-            ax.scatter(x_10,y_10,z_10, color=colours[par_ids.index(particle)])
-ax.set_title("First ten events")
-plt.xlabel("x")
-plt.ylabel("y")
-ax.set_zlabel("z")
-plt.show()
-"""
-"""
-str(x_col[i]) + '\t' + str(y_col[i]) + '\t' 
-        + str(z_col[i]) + '\t' + 
-"""

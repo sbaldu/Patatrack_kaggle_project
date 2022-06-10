@@ -102,13 +102,14 @@ def plotPair(r_pair_,z_pair_):
     point2 = [3, 4]
     x_values = [point1[0], point2[0]]
     y_values = [point1[1], point2[1]]
-    plt.scatter(z,radius,color='royalblue')
-    plt.plot([z_pair_[0],z_pair_[1]], [r_pair_[0],r_pair_[1]], 'bo', linestyle="-", color='red')
+    #plt.scatter(z,radius,color='royalblue')
+    #plt.plot([z_pair_[0],z_pair_[1]], [r_pair_[0],r_pair_[1]], 'bo', linestyle="-", color='red')
     plt.xlabel("z (mm)")
     plt.ylabel("r (mm)")
     plt.xlim(-3000,3000)
     plt.ylim(0,1100)
     plt.show() 
+plotPair([0],[1])
 
 #open_hit_file = open("test_par_hits.dat", 'w')
 #open_truth_file = open("test_globalIndexes.dat", 'w') 
@@ -146,8 +147,8 @@ open_truth_file.close()
 # This creates the dat files used in the c++ code for all the events (it takes a couple of hours to run, so don't un-comment it)
 
 # Save the number of hits for each event and the event ids
-hits_per_event = {}
-
+#hits_per_event = {}
+"""
 for i in range(len(hit_files)):
     print(i)
 
@@ -155,11 +156,16 @@ for i in range(len(hit_files)):
     event_indentifier = hit_files[i][48:52]
 
     # The output files are opened
-    open_hit_file = open(path + "not_sorted/par_hits_ns" + event_indentifier + ".dat", 'w')
-    open_truth_file = open(path + "not_sorted/globalIndexes_ns" + event_indentifier + ".dat", 'w') 
-    open_x_file = open(path + "not_sorted/x_ns" + event_indentifier + ".dat", 'w')
-    open_y_file = open(path + "not_sorted/y_ns" + event_indentifier + ".dat", 'w')
-    open_z_file = open(path + "not_sorted/z_ns" + event_indentifier + ".dat", 'w')
+    #open_hit_file = open(path + "not_sorted/par_hits_ns" + event_indentifier + ".dat", 'w')
+    #open_truth_file = open(path + "not_sorted/globalIndexes_ns" + event_indentifier + ".dat", 'w') 
+    #open_x_file = open(path + "not_sorted/x_ns" + event_indentifier + ".dat", 'w')
+    #open_y_file = open(path + "not_sorted/y_ns" + event_indentifier + ".dat", 'w')
+    #open_z_file = open(path + "not_sorted/z_ns" + event_indentifier + ".dat", 'w')
+    open_truth_file = open(path + "not_sorted/globalIndexes_blue" + event_indentifier + ".dat", 'w')
+    open_x_file = open(path + "not_sorted/x_blue" + event_indentifier + ".dat", 'w')
+    open_y_file = open(path + "not_sorted/y_blue" + event_indentifier + ".dat", 'w')
+    open_z_file = open(path + "not_sorted/z_blue" + event_indentifier + ".dat", 'w')
+    open_phi_file = open(path + "not_sorted/phi_blue" + event_indentifier + ".dat", 'w')
 
     # Select the df that I'll read
     hit_df = pd.read_csv(hit_files[i])
@@ -167,7 +173,7 @@ for i in range(len(hit_files)):
     layer_ids = hit_df['layer_id'].values.tolist()
     volume_ids = hit_df['volume_id'].values.tolist()
 
-    hits_per_event[event_indentifier] = len(layer_ids)
+    #hits_per_event[event_indentifier] = len(layer_ids)
 
     # Using a map I create a series that contains the global index and another one that contains the polar angle phi
     df_size = len(layer_ids)
@@ -189,23 +195,36 @@ for i in range(len(hit_files)):
     total_df_size = total_df_['particle_id'].size
     for i in range(total_df_size):
         if total_df_['particle_id'][i] != 0:
-            open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
-            open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
-            open_x_file.write(str(hit_df['x'][i]) + '\n')
-            open_y_file.write(str(hit_df['y'][i]) + '\n')
-            open_z_file.write(str(hit_df['z'][i]) + '\n')
+            if total_df_['globalIndex'][i] == 27:
+                break
+            else:
+                open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
+                open_x_file.write(str(hit_df['x'][i]) + '\n')
+                open_y_file.write(str(hit_df['y'][i]) + '\n')
+                open_z_file.write(str(hit_df['z'][i]) + '\n')
+                open_phi_file.write(str(int(total_df_['phi'][i])) + '\n')
+                #open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
+                #open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
+                #open_x_file.write(str(hit_df['x'][i]) + '\n')
+                #open_y_file.write(str(hit_df['y'][i]) + '\n')
+                #open_z_file.write(str(hit_df['z'][i]) + '\n')
     
-    open_hit_file.close()
-    open_truth_file.close()  
+    #open_hit_file.close()
+    #open_truth_file.close()  
+    #open_x_file.close()
+    #open_y_file.close()
+    #open_z_file.close()   
+    open_truth_file.close()
     open_x_file.close()
     open_y_file.close()
-    open_z_file.close()     
-open_hpe_file = open(path + "not_sorted/hits_per_event.csv", 'w')
-for event_identifier_ in hits_per_event:
-    open_hpe_file.write(event_identifier_ + ',' + str(hits_per_event[event_identifier_]) + '\n')
-open_hpe_file.close()
+    open_z_file.close()
+    open_phi_file.close()
+#open_hpe_file = open(path + "not_sorted/hits_per_event.csv", 'w')
+#for event_identifier_ in hits_per_event:
+#    open_hpe_file.write(event_identifier_ + ',' + str(hits_per_event[event_identifier_]) + '\n')
+#open_hpe_file.close()
 ######
-
+"""
 hits_ = pd.read_csv(hit_files[0])
 particles_ = pd.read_csv(par_files[0])
 truth_ = pd.read_csv(truth_files[0])
@@ -255,7 +274,7 @@ def combine(index):
     return pairs
 
 pairs_combinations = combine(indexes_list_nodupl)
-print(len(pairs_combinations))
+print('combinations = ' + str(len(pairs_combinations)))
 
 def return_index(pair,pairs):
     for i in range(len(pairs)):

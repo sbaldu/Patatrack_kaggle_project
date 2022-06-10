@@ -71,6 +71,8 @@ for i in range(col.size):
 print('hits from a volume to volume 7 = ' + str(count7)) # 7459
 plt.bar(pairs_.keys(), pairs_.values())
 plt.xticks(rotation = 45) 
+plt.xlabel('Coppie di Layers')
+plt.ylabel('Occorrenze')
 figsize = (20, 20)
 #plt.yscale("log")
 plt.show()
@@ -286,7 +288,6 @@ df1['Volumes'] = df1['volume1'].map(str) + '-' + df1['volume2'].map(str)
 df1
 
 ax1 = df1.plot.bar(x='Volumes', y='counts', rot=60)
-plt.title("Volume Counts")
-plt.xlabel("volumes")
-plt.ylabel("counts")
+plt.xlabel("Coppie di volumi")
+plt.ylabel("Occorrenze")
 plt.show()
