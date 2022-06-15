@@ -151,113 +151,82 @@ int main() {
     for(int n = 0; n <= n_files; ++n) {
         std::cout << n << '\n';
         int event_id = n + 4590;
-        if(event_id >= 5000 && event_id < 5500) {
-            continue;
-        }
+        if(event_id == 6000) {
+            if(event_id >= 5000 && event_id < 5500) {
+                continue;
+            }
 
-        std::string par_hit_file = "/home/simone/Documents/thesis/not_sorted/par_hits_ns" + std::to_string(event_id) + ".dat";
-        std::string index_file_name = "/home/simone/Documents/thesis/not_sorted/globalIndexes_ns" + std::to_string(event_id) + ".dat";
+            std::string par_hit_file = "/home/simone/Documents/thesis/not_sorted/par_hits_blue" + std::to_string(event_id) + ".dat";
+            std::string index_file_name = "/home/simone/Documents/thesis/not_sorted/globalIndexes_blue" + std::to_string(event_id) + ".dat";
 
-        // Read the par_hits.dat file
-        std::ifstream is;
-        is.open(par_hit_file);
-        std::vector<double> particles_hits;
-        double a;
+            // Read the par_hits.dat file
+            std::ifstream is;
+            is.open(par_hit_file);
+            std::vector<double> particles_hits;
+            double a;
 
-        // Create the vector containing all the particle ids (particle_id column in the df)
-        for(int i = 0; is >> a; ++i) {
-            particles_hits.push_back(a);
-        }
-        is.close();
+            // Create the vector containing all the particle ids (particle_id column in the df)
+            for(int i = 0; is >> a; ++i) {
+                particles_hits.push_back(a);
+            }
+            is.close();
 
-        // Read the globalIndex.dat file
-        std::ifstream is2;
-        is2.open(index_file_name);
-        std::vector<int> globalIndexes;
-        int b;
+            // Read the globalIndex.dat file
+            std::ifstream is2;
+            is2.open(index_file_name);
+            std::vector<int> globalIndexes;
+            int b;
 
-        // Create the vector containing all the global indexes (globalIndex column in the df)
-        for(int i = 0; is2 >> b; ++i) {
-            globalIndexes.push_back(b);
-        }
-        is2.close();
+            // Create the vector containing all the global indexes (globalIndex column in the df)
+            for(int i = 0; is2 >> b; ++i) {
+                globalIndexes.push_back(b);
+            }
+            is2.close();
+            
+            // Remove all duplicates from particle_hits
+            std::vector<double> particle_types = particles_hits;
+            std::sort( particle_types.begin(), particle_types.end() );
+            particle_types.erase( std::unique( particle_types.begin(), particle_types.end() ), particle_types.end() );
 
-        // Remove all duplicates from particle_hits
-        std::vector<double> particle_types = particles_hits;
-        std::sort( particle_types.begin(), particle_types.end() );
-        particle_types.erase( std::unique( particle_types.begin(), particle_types.end() ), particle_types.end() );
+            // Loop over indexes and make doublets
+            std::vector<int> indexes = globalIndexes;
+            std::sort(indexes.begin(), indexes.end());
+            indexes.erase( std::unique( indexes.begin(), indexes.end() ), indexes.end() );
 
-        // Loop over indexes and make doublets
-        std::vector<int> indexes = globalIndexes;
-        std::sort(indexes.begin(), indexes.end());
-        indexes.erase( std::unique( indexes.begin(), indexes.end() ), indexes.end() );
+            std::vector<std::vector<int>> pair_combinations = combine(indexes);
+            std::vector<std::vector<int>> pairs_;
 
-        std::vector<std::vector<int>> pair_combinations = combine(indexes);
+            // File that stores the tracks
+            std::ofstream outFile0;
+            std::string tTrack_file_name = "/home/simone/Documents/thesis/tracksData/truth_TrackB" + std::to_string(event_id) + ".csv";
+            outFile0.open(tTrack_file_name);
+            outFile0 << "hit_id" <<  '\n';
 
-        std::vector<std::vector<int>> pairs_;
-
-        /*
-        int h = 0;
-        int g = 0;
-        int f = 0;
-        int d = 0;
-        int r = 0;
-        int qua = 0;*/
-        for(int i = 0; i < particle_types.size(); ++i) {
-            std::vector<int> par_hit_indices = sort_hits(particle_types[i],particles_hits);
-            for(int j = 0; j < par_hit_indices.size() - 1; ++j) {
-                if(globalIndexes[par_hit_indices[j]] != globalIndexes[par_hit_indices[j+1]]) {
-                    /*if(globalIndexes[par_hit_indices[j+1]] == 11 || globalIndexes[par_hit_indices[j+1]] == 12 || globalIndexes[par_hit_indices[j+1]] == 13 ||
-                    globalIndexes[par_hit_indices[j+1]] == 14 || globalIndexes[par_hit_indices[j+1]] == 15 || globalIndexes[par_hit_indices[j+1]] == 16 ||
-                    globalIndexes[par_hit_indices[j+1]] == 17) {
-                        ++f;
+            for(int i = 0; i < particle_types.size(); ++i) {
+                std::vector<int> par_hit_indices = sort_hits(particle_types[i],particles_hits);
+                for(int j = 0; j < par_hit_indices.size() - 1; ++j) {
+                    outFile0 << par_hit_indices[j] << '\n';
+                    if(globalIndexes[par_hit_indices[j]] != globalIndexes[par_hit_indices[j+1]]) {
+                        pairs_.push_back({globalIndexes[par_hit_indices[j]],globalIndexes[par_hit_indices[j+1]]});  
                     }
-                    if(globalIndexes[par_hit_indices[j+1]] == 4 || globalIndexes[par_hit_indices[j+1]] == 5 || globalIndexes[par_hit_indices[j+1]] == 6 ||
-                    globalIndexes[par_hit_indices[j+1]] == 7 || globalIndexes[par_hit_indices[j+1]] == 8 || globalIndexes[par_hit_indices[j+1]] == 9 ||
-                    globalIndexes[par_hit_indices[j+1]] == 10) {
-                        ++d;
-                    }
-                    if(globalIndexes[par_hit_indices[j]] == 11 &&  globalIndexes[par_hit_indices[j+1]] == 0) {
-                        ++r;
-                    }
-                    if(globalIndexes[par_hit_indices[j]] == 4 &&  globalIndexes[par_hit_indices[j+1]] == 0) {
-                        ++qua;
-                    }*/
-                    pairs_.push_back({globalIndexes[par_hit_indices[j]],globalIndexes[par_hit_indices[j+1]]});  
-                /*} else {
-                    if(globalIndexes[par_hit_indices[j+1]] == 11 || globalIndexes[par_hit_indices[j+1]] == 12 || globalIndexes[par_hit_indices[j+1]] == 13 ||
-                    globalIndexes[par_hit_indices[j+1]] == 14 || globalIndexes[par_hit_indices[j+1]] == 15 || globalIndexes[par_hit_indices[j+1]] == 16 ||
-                    globalIndexes[par_hit_indices[j+1]] == 17) {
-                        ++h;
-                    }
-                    if(globalIndexes[par_hit_indices[j+1]] == 4 || globalIndexes[par_hit_indices[j+1]] == 5 || globalIndexes[par_hit_indices[j+1]] == 6 ||
-                    globalIndexes[par_hit_indices[j+1]] == 7 || globalIndexes[par_hit_indices[j+1]] == 8 || globalIndexes[par_hit_indices[j+1]] == 9 ||
-                    globalIndexes[par_hit_indices[j+1]] == 10) {
-                        ++g;
-                    }*/
                 }
             }
-        }
-        /*std::cout << h << '\n';
-        std::cout << g << '\n';
-        std::cout << f << '\n';
-        std::cout << d << '\n';
-        std::cout << r << '\n';
-        std::cout << qua << '\n';*/
+            outFile0.close();
 
-        // Give to each pair its index and prepare the csv file for the histogram
-        std::ofstream outFile;
-        std::string hist_file_name = "/home/simone/Documents/thesis/not_sorted/hist_ns" + std::to_string(event_id) + ".csv";
-        outFile.open(hist_file_name);
-        outFile << "pairIndex" << ',' << "pair" << ',' << "volume1" << ',' << "volume2" << ',' << "layer1" << ',' << "layer2" <<  '\n';
-
-        //std::vector<int> pair_indexes_;
-        for(int j = 0; j < pairs_.size(); ++j) {
-            std::set<int> set_ = {pairs_[j][0],pairs_[j][1]};
-            outFile << pairs_map[set_] << ',' << '(' + std::to_string(pairs_[j][0]) + '-' + std::to_string(pairs_[j][1]) +  ')' 
-            << ',' << getkey(index_map,pairs_[j][0])[0] << ',' << getkey(index_map,pairs_[j][1])[0] << ',' 
-            << getkey(index_map,pairs_[j][0])[1] << ',' << getkey(index_map,pairs_[j][1])[1] <<'\n';
+            //// Give to each pair its index and prepare the csv file for the histogram
+            //std::ofstream outFile;
+            //std::string hist_file_name = "/home/simone/Documents/thesis/not_sorted/hist_ns" + std::to_string(event_id) + ".csv";
+            //outFile.open(hist_file_name);
+            //outFile << "pairIndex" << ',' << "pair" << ',' << "volume1" << ',' << "volume2" << ',' << "layer1" << ',' << "layer2" <<  '\n';
+            //
+            ////std::vector<int> pair_indexes_;
+            //for(int j = 0; j < pairs_.size(); ++j) {
+            //    std::set<int> set_ = {pairs_[j][0],pairs_[j][1]};
+            //    outFile << pairs_map[set_] << ',' << '(' + std::to_string(pairs_[j][0]) + '-' + std::to_string(pairs_[j][1]) +  ')' 
+            //    << ',' << getkey(index_map,pairs_[j][0])[0] << ',' << getkey(index_map,pairs_[j][1])[0] << ',' 
+            //    << getkey(index_map,pairs_[j][0])[1] << ',' << getkey(index_map,pairs_[j][1])[1] <<'\n';
+            //}
+            //outFile.close();
         }
-        outFile.close();
    }
 }

@@ -19,16 +19,16 @@ path = '/home/simone/Documents/thesis/train_3/'
 truth_files = glob.glob(path + 'event00000*-truth.csv')
 
 # Take all the particle files
-path = '/home/simone/Documents/thesis/particle/'
-particle_files = glob.glob(path + 'event00000*-particle.csv')
+path = '/home/simone/Documents/thesis/train_3/'
+particle_files = glob.glob(path + 'event00000*-particles.csv')
 
 # Take all the truth_track files
-path = '/home/simone/Documents/thesis/not_sorted/'
-truth_files = glob.glob(path + 'hist_ns*.csv')
+path = '/home/simone/Documents/thesis/tracksData/'
+truth_files = glob.glob(path + 'truth_TrackB*.csv')
 
 # Take all the track files
 path = "/home/simone/Documents/thesis/tracksData/"
-track_files = glob.glob(path + 'track*.dat')
+track_files = glob.glob(path + 'tracks*.csv')
 
 # Define the cut that separates good tracks from bad ones
 cut = 0.75      # 75%
@@ -36,12 +36,11 @@ cut = 0.75      # 75%
 # Dictionary containing all the accepted reconstructed tracks
 correct_tracks = {}
 
-ratios = []
-momenta = []
-etas = []       # eta del primo hit
+#ratios = []
+#momenta = []
+#etas = []       # eta del primo hit
 
-for nFile in len(track_files):
-    print(track_file[len(track_file)-2])
+for nFile in range(len(track_files)):
     particle_df = pd.read_csv(particle_files[nFile])
     
     # Compute the trasverse momentum
@@ -53,28 +52,52 @@ for nFile in len(track_files):
 
     # Separate all the tracks
     track_file = pd.read_csv(track_files[nFile])
+    truth_file = pd.read_csv(truth_files[nFile])
+
     tracks = []
+    single_track = []
     for j in range(len(track_file)-1):
-        single_track = []
-        single_track.append(track_file[j])
+        single_track.append(track_file['hit_id'][j])
         if j == (len(track_file)-2):
-            single_track.append(track_file[j])
+            single_track.append(track_file['hit_id'][j])
             break
-        if track_file[j+1] < track_file[j]:
+        if track_file['hit_id'][j+1] < track_file['hit_id'][j]:
             tracks.append(single_track)
             single_track = []
-
-    truth_track = pd.read_csv(truth_files[nFile])
+    
+    truth_tracks = []
+    single_tTrack = []
+    for j in range(len(truth_file)-1):
+        single_tTrack.append(truth_file['hit_id'][j])
+        if j == (len(truth_file)-2):
+            single_tTrack.append(truth_file['hit_id'][j])
+            break
+        if truth_file['hit_id'][j+1] < truth_file['hit_id'][j]:
+            truth_tracks.append(single_tTrack)
+            single_tTrack = []
+    #print(truth_tracks)
     
     # Counter that counts how many hits have been assigned correctly
     counter = {}
-    compatibiliy = {}
-
-    for hit_t in truth_track:     # Cerca la miglior compatibilita' per ogni track
-        for j in len(tracks):
-            for hit in tracks[j]:
-                if hit == hit_t:
-                    counter[j] += 1
+    for j in range(len(tracks)):
+        counter[j] = 0
+    for tTrack in truth_tracks:              # Cerca la miglior compatibilita' per ogni track
+        for hit_t in tTrack:
+            for j in range(len(tracks)):
+                print('real track ')
+                print(tTrack)
+                print('possible track ')
+                print(tracks[j])
+                for hit in tracks[j]:
+                    print('true hit: ')
+                    print(hit_t)
+                    print('possible hit: ')
+                    print(hit)
+                    if hit == hit_t:
+                        print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+                        print(hit == hit_t)
+                        counter[j] += 1
+    #print(counter)
     
     # Find the track with the best compatibility
     
@@ -83,11 +106,12 @@ for nFile in len(track_files):
     #    if counter[j] > max:
     #        max = counter[j]
     #        maxj
-    max_comp =  max(counter.values())
-
-    ratio = max_comp/len(truth_track)
-    if ratio > cut:
-        ratios.append(ratio)
+    
+    #max_comp =  max(counter.values())
+    #
+    #ratio = max_comp/len(truth_track)
+    #if ratio > cut:
+    #    ratios.append(ratio)
         
 # For the plot I need to make sure that the sorting of the particles in the pT dataframe is the same as in the truth_tracks File
 
