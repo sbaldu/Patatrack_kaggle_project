@@ -78,28 +78,36 @@ for nFile in range(len(track_files)):
     #print(truth_tracks)
     
     # Counter that counts how many hits have been assigned correctly
-    counter = {}
-    for j in range(len(tracks)):
-        counter[j] = 0
+    #counter = {}
+    #for j in range(len(tracks)):
+    #    counter[j] = 0
+    ratios = []
     for tTrack in truth_tracks:              # Cerca la miglior compatibilita' per ogni track
+        counter = {}
         for hit_t in tTrack:
             for j in range(len(tracks)):
-                print('real track ')
-                print(tTrack)
-                print('possible track ')
-                print(tracks[j])
+                counter[j] = 0
+                #print('real track ')
+                #print(tTrack)
+                #print('possible track ')
+                #print(tracks[j])
                 for hit in tracks[j]:
-                    print('true hit: ')
-                    print(hit_t)
-                    print('possible hit: ')
-                    print(hit)
+                    #print('true hit: ')
+                    #print(hit_t)
+                    #print('possible hit: ')
+                    #print(hit)
                     if hit == hit_t:
-                        print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-                        print(hit == hit_t)
+                        #print('-------------------------------------------------------------')
+                        #print(hit == hit_t)
                         counter[j] += 1
-    #print(counter)
+        # Find the track with the best compatibility
+        #print(counter)
+        max_ = max(counter.values())
+        #print(max)
+        ratio = max_/len(tTrack)
+        ratios.append(ratio)
+    print(ratios)
     
-    # Find the track with the best compatibility
     
     #max = 0
     #for j in counter.keys():
