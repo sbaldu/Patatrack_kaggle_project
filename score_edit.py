@@ -133,6 +133,7 @@ def score_event(truth, submission):
 
 import pandas as pd
 import numpy as np
+import copy
 
 #testing a reconstructed track from the data 
 df_truth_track = pd.read_csv("~/CERN/new_data_train_2.csv")
@@ -142,12 +143,15 @@ track_ids = set(df_truth_track.track_id)
 #print(track_ids)
 #print(len(track_ids))
 
+volume_array= []
+score_array = []
+
 track_interest = track_ids.pop()
 my_mask = df_truth_track.track_id == track_interest
 #print(my_mask)
 #print(df_truth_track[my_mask])
 
-# using the real data 
+ # using the real data 
 df_truth = pd.read_csv("~/CERN/new_data_train_2.csv")
 #print(df_truth.track_id)
 
@@ -156,43 +160,32 @@ track_ids = set(df_truth.track_id)
 #print(len(track_ids))
 
 track_interest = random.choice(tuple(track_ids))
-print(track_interest)
-my_mask = df_truth.track_id == track_interest
-#print(my_mask)
+number_of_hits_dropped_from_volume = {}
 
-df_truth = df_truth[my_mask]
+for track_interest in random.sample(track_ids,100):
+    print(track_interest)
+    my_mask = df_truth.track_id == track_interest
+    #print(my_mask)
+    df_truth_one_track = df_truth[my_mask]
+    df_truth_one_track = copy.deepcopy(df_truth_one_track)
+    #scoring a track with dropped hits 
+    df_truth_one_track.index
+    df_truth_one_track["particle_id"] = df_truth_one_track.track_id
+    #looking at relationship between volume ids and scores
+    df_truth_volume_table = pd.read_csv("/Users/angies/Desktop/Geneva Study Abroad/CERN/CERN_Patatrack/trackml-library/train_2/event000002820-hits.csv")
+    for index_to_drop in df_truth_one_track.index:
+        df_truth2 = df_truth_one_track.drop(index = index_to_drop)
+        df_truth_one_track["particle_id"] = df_truth_one_track.track_id  # score function expects particle_id not track_id, set it to be called particle_id
+        volume = int(df_truth_volume_table[df_truth_volume_table.hit_id == index_to_drop].volume_id)
+        score_array.append(score_event(df_truth_one_track,df_truth2))
+        volume_array.append(volume)
+        if not volume in number_of_hits_dropped_from_volume:
+            number_of_hits_dropped_from_volume[volume] = 0
+        number_of_hits_dropped_from_volume[volume]+=1
 
-#scoring a track with dropped hits 
-df_truth.index
-index_to_drop = random.choices(df_truth.index, k=3)
-#print(index_to_drop)
-
-#print(df_truth)
-df_truth2 = df_truth.drop(index = index_to_drop)
-df_truth["particle_id"] = df_truth.track_id
-#print(df_truth2)
-
-#print(score_event(df_truth,df_truth2))
-#print(df_hits)
-
-#looking at relationship between volume ids and scores
-df_truth_volume_table = pd.read_csv("/Users/angies/Desktop/Geneva Study Abroad/CERN/CERN_Patatrack/trackml-library/train_2/event000002820-hits.csv")
-
-#for id in index_to_drop:
-    #print (df_truth_volume_table[df_truth_volume_table.hit_id == id].volume_id)
-
-volume_array= []
-score_array = []
-
-for trial in range(10):
-    index_to_drop = random.choices(df_truth.index, k=1)
-    df_truth2 = df_truth.drop(index = index_to_drop)
-    df_truth["particle_id"] = df_truth.track_id  # score function expects particle_id not track_id, set it to be called particle_id
-    score_array.append(score_event(df_truth,df_truth2))
-    volume_array.append(int(df_truth_volume_table[df_truth_volume_table.hit_id == index_to_drop[0]].volume_id))
-
-print(volume_array)
-print(score_array)
+print(number_of_hits_dropped_from_volume)
+#print(volume_array)
+#print(score_array)
 
 import matplotlib.pyplot as plt 
 
@@ -207,4 +200,11 @@ for volume_id in volume_list:
     scores.append(np.mean(list_scores_in_volume))
 
 plt.bar(volume_list,scores)
+plt.ylabel('Scores')
+plt.xlabel('Volumes')
+plt.xticks([7,8,9,12,13,14,16,17,18])
+plt.title('Scores vs Volumes')
+plt.show()
+
+plt.bar(number_of_hits_dropped_from_volume)
 plt.show()
