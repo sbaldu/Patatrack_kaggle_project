@@ -54,12 +54,23 @@ for nFile in range(len(track_files)):
     track_file = pd.read_csv(track_files[nFile])
     truth_file = pd.read_csv(truth_files[nFile])
 
+    #len_ = len(track_file['hit_id'])
+    #ind = 0
+    #indexes = []
+    #for j in range(len_):
+    #    indexes.append(ind)
+    #    if (track_file['hit_id'][j] > track_file['hit_id'][j+1]) and (j != len_-1):
+    #        ind += 1
+    #indexes.append(ind)
+    #df_track = pd.concat([track_file['hit_id'],indexes])
+    #print(df_track)
+    #
     tracks = []
     single_track = []
     for j in range(len(track_file)-1):
         single_track.append(track_file['hit_id'][j])
-        if j == (len(track_file)-2):
-            single_track.append(track_file['hit_id'][j])
+        if j == (len(track_file)-1):
+            tracks.append(single_track)
             break
         if track_file['hit_id'][j+1] < track_file['hit_id'][j]:
             tracks.append(single_track)
@@ -69,8 +80,8 @@ for nFile in range(len(track_files)):
     single_tTrack = []
     for j in range(len(truth_file)-1):
         single_tTrack.append(truth_file['hit_id'][j])
-        if j == (len(truth_file)-2):
-            single_tTrack.append(truth_file['hit_id'][j])
+        if j == (len(truth_file)-1):
+            truth_tracks.append(single_tTrack)
             break
         if truth_file['hit_id'][j+1] < truth_file['hit_id'][j]:
             truth_tracks.append(single_tTrack)
@@ -82,7 +93,7 @@ for nFile in range(len(track_files)):
     #for j in range(len(tracks)):
     #    counter[j] = 0
     ratios = []
-    for tTrack in truth_tracks:              # Cerca la miglior compatibilita' per ogni track
+    for tTrack in truth_tracks:     # Cerca la miglior compatibilita' per ogni track
         counter = {}
         for hit_t in tTrack:
             for j in range(len(tracks)):

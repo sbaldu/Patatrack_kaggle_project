@@ -13,7 +13,7 @@ std::vector<int> sort_hits(double const &particle_id, std::vector<double> &par_h
 
     for(int i = 0; i < par_hits_.size(); ++i) {
         if(par_hits_[i] == particle_id) {
-            result.push_back(i);
+            result.push_back(i+1);
         }
     }
 
@@ -149,7 +149,7 @@ int main() {
 
     int n_files = 1819;
     for(int n = 0; n <= n_files; ++n) {
-        std::cout << n << '\n';
+        //std::cout << n << '\n';
         int event_id = n + 4590;
         if(event_id == 6000) {
             if(event_id >= 5000 && event_id < 5500) {
@@ -201,8 +201,8 @@ int main() {
             std::string tTrack_file_name = "/home/simone/Documents/thesis/tracksData/truth_TrackB" + std::to_string(event_id) + ".csv";
             outFile0.open(tTrack_file_name);
             outFile0 << "hit_id" <<  '\n';
-
-            for(int i = 0; i < particle_types.size(); ++i) {
+            
+            for(int i = 1; i < particle_types.size(); ++i) {
                 std::vector<int> par_hit_indices = sort_hits(particle_types[i],particles_hits);
                 for(int j = 0; j < par_hit_indices.size() - 1; ++j) {
                     outFile0 << par_hit_indices[j] << '\n';

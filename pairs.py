@@ -143,6 +143,7 @@ for i in range(total_df_size):
 open_hit_file.close()
 open_truth_file.close() 
 """
+
 ######
 # This creates the dat files used in the c++ code for all the events (it takes a couple of hours to run, so don't un-comment it)
 
@@ -194,22 +195,22 @@ for i in range(len(hit_files)):
         total_df_.sort_values(by=['phi'])
 
         total_df_size = total_df_['particle_id'].size
+        print(total_df_)
         for i in range(total_df_size):
-            if total_df_['particle_id'][i] != 0:
-                print(i)
-                if total_df_['globalIndex'][i] == 27:
-                    break
-                else:
-                    #open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
-                    #open_x_file.write(str(hit_df['x'][i]) + '\n')
-                    #open_y_file.write(str(hit_df['y'][i]) + '\n')
-                    #open_z_file.write(str(hit_df['z'][i]) + '\n')
-                    #open_phi_file.write(str(int(total_df_['phi'][i])) + '\n')
-                    open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
-                    open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
-                    #open_x_file.write(str(hit_df['x'][i]) + '\n')
-                    #open_y_file.write(str(hit_df['y'][i]) + '\n')
-                    #open_z_file.write(str(hit_df['z'][i]) + '\n')
+            print(i)
+            if total_df_['globalIndex'][i] == 27:
+                break
+            else:
+                #open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
+                #open_x_file.write(str(hit_df['x'][i]) + '\n')
+                #open_y_file.write(str(hit_df['y'][i]) + '\n')
+                #open_z_file.write(str(hit_df['z'][i]) + '\n')
+                #open_phi_file.write(str(int(total_df_['phi'][i])) + '\n')
+                open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
+                open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
+                #open_x_file.write(str(hit_df['x'][i]) + '\n')
+                #open_y_file.write(str(hit_df['y'][i]) + '\n')
+                #open_z_file.write(str(hit_df['z'][i]) + '\n')
     
         open_hit_file.close()
         open_truth_file.close()  
@@ -226,138 +227,3 @@ for i in range(len(hit_files)):
 #    open_hpe_file.write(event_identifier_ + ',' + str(hits_per_event[event_identifier_]) + '\n')
 #open_hpe_file.close()
 ######
-
-hits_ = pd.read_csv(hit_files[0])
-particles_ = pd.read_csv(par_files[0])
-truth_ = pd.read_csv(truth_files[0])
-
-layer_ids = hits_['layer_id'].values.tolist()
-volume_ids = hits_['volume_id'].values.tolist()
-df_size = len(layer_ids)
-indexes_list = []
-
-for row in range(df_size):
-    indexes_list.append(index_map[(volume_ids[row],layer_ids[row])])
-globalIndexes = pd.Series(indexes_list)
-
-total_df = pd.concat([truth_['particle_id'],np.sqrt(hits_['x']**2 + hits_['y']**2),hits_['z'],globalIndexes],axis=1)
-total_df = total_df.rename(columns={0:'r'})
-total_df = total_df.rename(columns={1:'globalIndex'})
-#total_df = total_df.sort_values(by='r',ascending=True)
-#total_df = total_df.reset_index(drop=True)
-print(total_df)
-
-total_df_size = total_df['particle_id'].size
-
-def sort_hits(particle_id):
-    list_hits = []
-
-    for i in range(total_df_size):
-        if total_df['particle_id'][i] == particle_id:
-            list_hits.append(i)
-            
-    return list_hits
-
-# From the truth df I find all the particle ids
-t_particle_types = list(set(truth_['particle_id'].values.tolist()))
-n_particles = len(t_particle_types)     # 8977
-
-# I prepare che list of global indexes from the df to be used in Paula's code
-indexes_list_nodupl = np.unique(indexes_list) #remove duplicates
-
-# Paula's code, which I'm using to assing an index to the pairs
-def combine(index):
-    """Given the global index of each layer ID, list every possible combination of layers"""
-    pairs = []
-    for i in range(len(index)):
-        for j in range(i+1,len(index)):
-            pairs.append([index[i], index[j]])
-    pairs.sort()
-    return pairs
-
-pairs_combinations = combine(indexes_list_nodupl)
-print('combinations = ' + str(len(pairs_combinations)))
-
-def return_index(pair,pairs):
-    for i in range(len(pairs)):
-        if (pair == pairs[i]) or ([pair[1],pair[0]] == pairs[i]):
-            return i
-    return 'nope'
-
-list_pair_indexes = []
-
-# The range in the for loop is set to plot just a few tracks
-for i in range(int(n_particles/4000)):
-    # I increase the value of i just to show different tracks
-    i += 8000
-    print(i)
-    if t_particle_types[i] != 0:
-        par_hit_indexes = sort_hits(t_particle_types[i])        # I think that this function is slowing down the program
-        print(t_particle_types[i])
-    
-        #hits_globalindexes = []
-        #r_ = []
-        #z_ = []
-        pairs_ = []
-        r_pair  =[]
-        z_pair = []
-        for index in par_hit_indexes:
-            #print(total_df['r'][index])
-            if (index != par_hit_indexes[len(par_hit_indexes)-1]) and (total_df['globalIndex'][index] != total_df['globalIndex'][par_hit_indexes[par_hit_indexes.index(index)+1]]):
-                #r_.append(total_df['r'][index])
-                #z_.append(total_df['z'][index])
-                #hits_globalindexes.append(total_df['globalIndex'][index])
-                pairs_.append([total_df['globalIndex'][index],total_df['globalIndex'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
-                r_pair.append([total_df['r'][index],total_df['r'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
-                z_pair.append([total_df['z'][index],total_df['z'][par_hit_indexes[par_hit_indexes.index(index)+1]]])
-    
-        #print(pairs_)
-    
-        """
-        fig = plt.figure()
-        plt.scatter(z_,r_)
-        plt.xlabel("z (mm)")
-        plt.ylabel("r (mm)")
-        plt.xlim(-3000,3000)
-        plt.ylim(0,1000)
-        plt.show() 
-        """
-
-        for i in range(len(pairs_)):
-            plotPair(r_pair[i],z_pair[i])
-    
-        # Now I want to take all the doublets created for this particle and assign to each one a pair-index
-        pair_indexes = []
-        for pair in pairs_:
-            pair_indexes.append(return_index(pair,pairs_combinations))
-        #print(pair_indexes)
-        list_pair_indexes += pair_indexes   
-    
-dict_ = {}
-#for pair_ind in list_pair_indexes:
-#    key_ = str(pair_ind)
-#    if (key_ in dict_) == False:
-#        dict_[str(pair_ind)] = 1
-#    else:
-#        dict_[str(pair_ind)] += 1
-#print(dict_)
-
-n_of_pairs = len(list_pair_indexes)
-#print(len(list_pair_indexes))
-open_file = open("doubletsIndexes.csv", 'w')
-    
-for i in range(n_of_pairs):
-    open_file.write(str(list_pair_indexes[i]) + '\n')
-open_file.close()
-
-"""
-open_file = open("par_hits.dat", 'w')    
-for i in range(total_df_size):
-    open_file.write(str(total_df['particle_id'][i]) + '\n')
-open_file.close()
-
-open_file = open("globalIndexes.dat", 'w')    
-for i in range(total_df_size):
-    open_file.write(str(total_df['globalIndex'][i]) + '\n')
-open_file.close()
-"""
