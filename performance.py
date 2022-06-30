@@ -54,70 +54,86 @@ for nFile in range(len(track_files)):
     track_file = pd.read_csv(track_files[nFile])
     truth_file = pd.read_csv(truth_files[nFile])
 
-    #len_ = len(track_file['hit_id'])
-    #ind = 0
-    #indexes = []
-    #for j in range(len_):
-    #    indexes.append(ind)
-    #    if (track_file['hit_id'][j] > track_file['hit_id'][j+1]) and (j != len_-1):
-    #        ind += 1
-    #indexes.append(ind)
-    #df_track = pd.concat([track_file['hit_id'],indexes])
-    #print(df_track)
+    len_ = len(track_file['hit_id'])
+    trackId_series = pd.Series(np.zeros((len_)))
+    id_ = 0
+    for i in range(len_-1):
+        trackId_series[i] = id_
+        if track_file['hit_id'][i+1] < track_file['hit_id'][i]:
+            id_ += 1
+    trackId_series[len_-1] = id_
+    df_track = pd.concat([track_file['hit_id'],trackId_series],axis=1)
+    df_track = df_track.rename(columns={0:'TrackId'})
+    print(df_track)
+
+    tlen_ = len(truth_file['hit_id'])
+    tTrackId_series = pd.Series(np.zeros((tlen_)))
+    id_ = 0
+    for i in range(tlen_-1):
+        tTrackId_series[i] = id_
+        if truth_file['hit_id'][i+1] < truth_file['hit_id'][i]:
+            id_ += 1
+    tTrackId_series[tlen_-1] = id_
+    df_tTrack = pd.concat([truth_file['hit_id'],tTrackId_series],axis=1)
+    df_tTrack = df_tTrack.rename(columns={0:'TrackId'})
+    print(df_tTrack)
+    
+    #tracks = []
+    #single_track = []
+    #for j in range(len(track_file)-1):
+    #    single_track.append(track_file['hit_id'][j])
+    #    if j == (len(track_file)-1):
+    #        tracks.append(single_track)
+    #        break
+    #    if track_file['hit_id'][j+1] < track_file['hit_id'][j]:
+    #        tracks.append(single_track)
+    #        single_track = []
     #
-    tracks = []
-    single_track = []
-    for j in range(len(track_file)-1):
-        single_track.append(track_file['hit_id'][j])
-        if j == (len(track_file)-1):
-            tracks.append(single_track)
-            break
-        if track_file['hit_id'][j+1] < track_file['hit_id'][j]:
-            tracks.append(single_track)
-            single_track = []
+    #truth_tracks = []
+    #single_tTrack = []
+    #for j in range(len(truth_file)-1):
+    #    single_tTrack.append(truth_file['hit_id'][j])
+    #    if j == (len(truth_file)-1):
+    #        truth_tracks.append(single_tTrack)
+    #        break
+    #    if truth_file['hit_id'][j+1] < truth_file['hit_id'][j]:
+    #        truth_tracks.append(single_tTrack)
+    #        single_tTrack = []
     
-    truth_tracks = []
-    single_tTrack = []
-    for j in range(len(truth_file)-1):
-        single_tTrack.append(truth_file['hit_id'][j])
-        if j == (len(truth_file)-1):
-            truth_tracks.append(single_tTrack)
-            break
-        if truth_file['hit_id'][j+1] < truth_file['hit_id'][j]:
-            truth_tracks.append(single_tTrack)
-            single_tTrack = []
-    #print(truth_tracks)
+    # Count how many hits have been assigned correctly
     
+
+
     # Counter that counts how many hits have been assigned correctly
     #counter = {}
     #for j in range(len(tracks)):
     #    counter[j] = 0
-    ratios = []
-    for tTrack in truth_tracks:     # Cerca la miglior compatibilita' per ogni track
-        counter = {}
-        for hit_t in tTrack:
-            for j in range(len(tracks)):
-                counter[j] = 0
-                #print('real track ')
-                #print(tTrack)
-                #print('possible track ')
-                #print(tracks[j])
-                for hit in tracks[j]:
-                    #print('true hit: ')
-                    #print(hit_t)
-                    #print('possible hit: ')
-                    #print(hit)
-                    if hit == hit_t:
-                        #print('-------------------------------------------------------------')
-                        #print(hit == hit_t)
-                        counter[j] += 1
-        # Find the track with the best compatibility
-        #print(counter)
-        max_ = max(counter.values())
-        #print(max)
-        ratio = max_/len(tTrack)
-        ratios.append(ratio)
-    print(ratios)
+    #ratios = []
+    #for tTrack in truth_tracks:     # Cerca la miglior compatibilita' per ogni track
+    #    counter = {}
+    #    for hit_t in tTrack:
+    #        for j in range(len(tracks)):
+    #            counter[j] = 0
+    #            #print('real track ')
+    #            #print(tTrack)
+    #            #print('possible track ')
+    #            #print(tracks[j])
+    #            for hit in tracks[j]:
+    #                #print('true hit: ')
+    #                #print(hit_t)
+    #                #print('possible hit: ')
+    #                #print(hit)
+    #                if hit == hit_t:
+    #                    #print('-------------------------------------------------------------')
+    #                    #print(hit == hit_t)
+    #                    counter[j] += 1
+    #    # Find the track with the best compatibility
+    #    #print(counter)
+    #    max_ = max(counter.values())
+    #    #print(max)
+    #    ratio = max_/len(tTrack)
+    #    ratios.append(ratio)
+    #print(ratios)
     
     
     #max = 0
