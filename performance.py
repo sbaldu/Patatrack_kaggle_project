@@ -2,7 +2,7 @@ from urllib.request import parse_http_list
 from matplotlib.backend_bases import FigureManagerBase
 from matplotlib.pyplot import eventplot
 from more_itertools import first
-from numpy import sort, triu_indices
+from numpy import NaN, sort, triu_indices
 from operator import index, truth
 import pandas as pd
 import numpy as np
@@ -136,15 +136,16 @@ for nFile in range(len(track_files)):
             truth_tracks.append(single_tTrack)
             single_tTrack = []
 
-    # I also need to save the transverse momentum and eta
+    # Calculate the pseudorapidity for the graphs
     eta = []     # I'll define it later (float)
     for track in truth_tracks:
         last_id = track[-1]
-        z = hits_df['z'][hits_df['hit_id'] == last_id]
-        y = hits_df['y'][hits_df['hit_id'] == last_id]
-        theta_ = np.atan(y/z)
+        z = float(hits_df['z'][hits_df['hit_id'] == last_id])
+        y = float(hits_df['y'][hits_df['hit_id'] == last_id])
+        theta_ = np.arctan(y/z)
+        eta_ = -np.log(np.abs(np.tan(theta_/2)))
+        print(eta_)
         
-        eta_ = -np.log(np.tan(theta_/2))
         eta.append(eta_)
 
     
