@@ -136,18 +136,18 @@ import numpy as np
 import copy
 
 #testing a reconstructed track from the data 
-df_truth_track = pd.read_csv("~/CERN/new_data_train_2.csv")
+#df_truth_track = pd.read_csv("~/CERN/new_data_train_2.csv")
 #print(df_truth.track_id)
 
-track_ids = set(df_truth_track.track_id)
+#track_ids = set(df_truth_track.track_id) #removes duplicates
 #print(track_ids)
 #print(len(track_ids))
 
 volume_array= []
 score_array = []
 
-track_interest = track_ids.pop()
-my_mask = df_truth_track.track_id == track_interest
+#track_interest = track_ids.pop()
+#my_mask = df_truth_track.track_id == track_interest
 #print(my_mask)
 #print(df_truth_track[my_mask])
 
