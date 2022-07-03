@@ -177,11 +177,12 @@ for track_interest in random.sample(track_ids,100):
         df_truth2 = df_truth_one_track.drop(index = index_to_drop)
         df_truth_one_track["particle_id"] = df_truth_one_track.track_id  # score function expects particle_id not track_id, set it to be called particle_id
         volume = int(df_truth_volume_table[df_truth_volume_table.hit_id == index_to_drop].volume_id)
-        score_array.append(score_event(df_truth_one_track,df_truth2))
-        volume_array.append(volume)
-        if not volume in number_of_hits_dropped_from_volume:
-            number_of_hits_dropped_from_volume[volume] = 0
-        number_of_hits_dropped_from_volume[volume]+=1
+        if volume == 7: 
+            score_array.append(score_event(df_truth_one_track,df_truth2))
+            volume_array.append(volume)
+            if not volume in number_of_hits_dropped_from_volume:
+                number_of_hits_dropped_from_volume[volume] = 0
+                number_of_hits_dropped_from_volume[volume]+=1
 
 print(number_of_hits_dropped_from_volume)
 #print(volume_array)
@@ -204,7 +205,4 @@ plt.ylabel('Scores')
 plt.xlabel('Volumes')
 plt.xticks([7,8,9,12,13,14,16,17,18])
 plt.title('Scores vs Volumes')
-plt.show()
-
-plt.bar(number_of_hits_dropped_from_volume)
 plt.show()
