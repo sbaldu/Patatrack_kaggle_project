@@ -18,6 +18,10 @@ import glob
 path = '/home/simone/Documents/thesis/train_3/'
 truth_files = glob.glob(path + 'event00000*-truth.csv')
 
+# Take all the hit files
+path = '/home/simone/Documents/thesis/train_3/'
+hit_files = glob.glob(path + 'event00000*-hits.csv')
+
 # Take all the particle files
 path = '/home/simone/Documents/thesis/train_3/'
 particle_files = glob.glob(path + 'event00000*-particles.csv')
@@ -42,13 +46,11 @@ correct_tracks = {}
 
 for nFile in range(len(track_files)):
     particle_df = pd.read_csv(particle_files[nFile])
+    hits_df = pd.read_csv(hit_files[nFile])
     
     # Compute the trasverse momentum
     p_trasv = pd.concat([np.sqrt(particle_df['px']**2 + particle_df['py']**2)],axis=1)
     p_Trasv = p_trasv.rename(columns={0:'pTrasv'})
-    
-    # I also need to save the transverse momentum and eta
-    eta = 0     # I'll define it later (float)
 
     # Separate all the tracks
     track_file = pd.read_csv(track_files[nFile])
@@ -133,6 +135,18 @@ for nFile in range(len(track_files)):
         if truth_file['hit_id'][j+1] < truth_file['hit_id'][j]:
             truth_tracks.append(single_tTrack)
             single_tTrack = []
+
+    # I also need to save the transverse momentum and eta
+    eta = []     # I'll define it later (float)
+    for track in truth_tracks:
+        last_id = track[-1]
+        z = hits_df['z'][hits_df['hit_id'] == last_id]
+        y = hits_df['y'][hits_df['hit_id'] == last_id]
+        theta_ = np.atan(y/z)
+        
+        eta_ = -np.log(np.tan(theta_/2))
+        eta.append(eta_)
+
     
     # Counter that counts how many hits have been assigned correctly
     counter = {}
