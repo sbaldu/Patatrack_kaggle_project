@@ -40,10 +40,6 @@ cut = 0.75      # 75%
 # Dictionary containing all the accepted reconstructed tracks
 correct_tracks = {}
 
-#ratios = []
-#momenta = []
-#etas = []       # eta del primo hit
-
 for nFile in range(len(track_files)):
     particle_df = pd.read_csv(particle_files[nFile])
     hits_df = pd.read_csv(hit_files[nFile])
@@ -144,7 +140,7 @@ for nFile in range(len(track_files)):
         y = float(hits_df['y'][hits_df['hit_id'] == last_id])
         theta_ = np.arctan(y/z)
         eta_ = -np.log(np.abs(np.tan(theta_/2)))
-        print(eta_)
+        #print(eta_)
         
         eta.append(eta_)
 
@@ -154,29 +150,23 @@ for nFile in range(len(track_files)):
     for j in range(len(tracks)):
         counter[j] = 0
     ratios = []
-    for tTrack in truth_tracks:     # Cerca la miglior compatibilita' per ogni track
+    for tTrack in truth_tracks[:100]:     # Cerca la miglior compatibilita' per ogni track
+        print('a')
         counter = {}
         for hit_t in tTrack:
             for j in range(len(tracks)):
                 counter[j] = 0
-                #print('real track ')
-                #print(tTrack)
-                #print('possible track ')
-                #print(tracks[j])
                 for hit in tracks[j]:
-                    #print('true hit: ')
-                    #print(hit_t)
-                    #print('possible hit: ')
-                    #print(hit)
-                    if hit == hit_t:
-                        #print('-------------------------------------------------------------')
-                        #print(hit == hit_t)
+                    if hits_df['hit_id'][hit] == hit_t:
                         counter[j] += 1
+        
         # Find the track with the best compatibility
         #print(counter)
         max_ = max(counter.values())
-        #print(max)
+        if max_ != 0:
+            print(max_)
         ratio = max_/len(tTrack)
+        print(ratio)
         ratios.append(ratio)
     print(ratios)
     
