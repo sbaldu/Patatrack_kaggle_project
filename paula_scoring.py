@@ -1,7 +1,9 @@
 from curses import KEY_NEXT
 from lib2to3.pgen2 import driver
 from operator import le, truth
+from re import T, sub
 from typing import final
+from unittest.util import sorted_list_difference
 #from this import s
 import numpy
 import pandas
@@ -69,21 +71,14 @@ def calc_Sum(df):
     return df
 grouped_weights = calc_Sum(grouped_weights)
 
+
 #sort leftover hits by particle ID and add coln of weight sums              ** this is new truth file to score against
 grouped_truth = blue_truthdf.groupby("particle_id")
 sorted_hits = grouped_truth["hit_id"].apply(list)
 sorted_hits = sorted_hits.reset_index()
-sorted_hits['weight'] = grouped_weights['weight']       #6760 length
-
-
-#double check no duplicate particle ids
-def duplicateCheck(array):
-    ''' Check if given array contains any duplicates '''
-    if len(array) == len(set(array)):
-        return 'none!'
-    else:
-        return 'oh no!'
-#print(duplicateCheck(particles))
+sorted_hits['weight'] = grouped_weights['weight']
+sorted_hits = sorted_hits.iloc[1:,:]       #6759 length
+sorted_hits.to_csv('sorted_hits.csv',index=False)
 
 
 def changingHits(blue_truth,blue_hits): #slow with random.sample, faster with random.choices but might allow duplicates
@@ -97,7 +92,7 @@ def changingHits(blue_truth,blue_hits): #slow with random.sample, faster with ra
         if len(hit_array) > 1 and len(hit_array) <= 10:
             ndrop = int(1) #randrange(0,1,1), making a range would be more ideal but idk
             k = randrange(1,2) #start at 1 so no empty arrays
-            random_add = random.sample(list(hits_hits),k)
+            random_add = random.sample(list(hits_hits),k) #enclose in tuple for tuple appendage instead of array
             hit_array.append(random_add) #appends as arrays, explode twice later to remove this formatting
         else:
             ndrop = randrange(0,len(hit_array),1)
@@ -108,18 +103,22 @@ def changingHits(blue_truth,blue_hits): #slow with random.sample, faster with ra
             print('fail') #makes sure no empty arrays
         #dataframe['ndrop'] = ndrop   (optional)
         hit_array.pop(ndrop)
-
-    truth_copy = truth_copy.explode('hit_id') 
-    truth_copy = truth_copy.explode('hit_id')
+        
+    #truth_copy = truth_copy.explode('hit_id') 
+    #truth_copy = truth_copy.explode('hit_id')
     truth_copy = truth_copy.rename(columns={'particle_id':'track_id'},inplace=False)
+    truth_copy = truth_copy.iloc[1:,:]
+    truth_copy.to_csv('final_fakes.csv',index=False) #can alter later to make overwrite file each time
     return truth_copy
 final_fakes = changingHits(sorted_hits,blue_hitsdf) #53478 length              ** This is submission file
 
-#idk = final_fakes['hit_id']
-#blue_truthdf2 = blue_truthdf[blue_truthdf['hit_id'].isin(idk)]
+#truth = sorted_hits.to_csv('sorted_hits.csv',index=False)
+#submission = final_fakes.to_csv('final_fakes.csv',index=False)
+truth = pandas.read_csv('sorted_hits.csv')
+submission = pandas.read_csv('final_fakes.csv')
+#print(truth)
+#print(submission)
 
-print(sorted_hits)
-print(final_fakes)
 
 
 #test files, mainly **ignore this**
@@ -154,6 +153,7 @@ def _analyze_tracks(truth, submission):
                          on=['hit_id'], how='left', validate='one_to_one')
     event.drop('hit_id', axis=1, inplace=True)
     event.sort_values(by=['track_id', 'particle_id'], inplace=True)
+    #print(event)
 
     # ASSUMPTIONs: 0 <= track_id, 0 <= particle_id
 
@@ -229,6 +229,9 @@ def _analyze_tracks(truth, submission):
             'major_nhits', 'major_weight']
     return pandas.DataFrame.from_records(tracks, columns=cols)
 
+#print(_analyze_tracks(df_truth,truth_copy1))
+#print(_analyze_tracks(truth,submission))
+
 def score_event(truth, submission):
     """Compute the TrackML event score for a single event.
     Parameters
@@ -253,18 +256,9 @@ def score_event(truth, submission):
     return tracks['major_weight'][good_track].sum() #comment out/fix so score is per track not per event
 
 #print(score_event(df_truth,truth_copy1))
-#print(score_event(sorted_hits,final_fakes))
+print(score_event(truth,submission))
 
 #############################################################
-
-#print(score_event(df_truth,final_fakes))
-
-
-
-
-
-
-
 
 
 
