@@ -156,8 +156,8 @@ int main() {
                 continue;
             }
 
-            std::string par_hit_file = "/home/simone/Documents/thesis/not_sorted/par_hits_blue" + std::to_string(event_id) + ".dat";
-            std::string index_file_name = "/home/simone/Documents/thesis/not_sorted/globalIndexes_blue" + std::to_string(event_id) + ".dat";
+            std::string par_hit_file = "/home/simone/Documents/thesis/not_sorted/par_hits_P" + std::to_string(event_id) + ".dat";
+            std::string index_file_name = "/home/simone/Documents/thesis/not_sorted/globalIndexes_P" + std::to_string(event_id) + ".dat";
 
             // Read the par_hits.dat file
             std::ifstream is;
@@ -198,7 +198,7 @@ int main() {
 
             // File that stores the tracks
             std::ofstream outFile0;
-            std::string tTrack_file_name = "/home/simone/Documents/thesis/tracksData/truth_TrackB" + std::to_string(event_id) + ".csv";
+            std::string tTrack_file_name = "/home/simone/Documents/thesis/tracksData/truth_TrackP" + std::to_string(event_id) + ".csv";
             outFile0.open(tTrack_file_name);
             outFile0 << "hit_id" <<  '\n';
             

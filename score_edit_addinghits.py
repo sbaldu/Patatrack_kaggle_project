@@ -173,16 +173,17 @@ for track_interest in random.sample(track_ids,100):
     df_truth_one_track["particle_id"] = df_truth_one_track.track_id
     #looking at relationship between volume ids and scores
     df_truth_volume_table = pd.read_csv("/Users/angies/Desktop/Geneva Study Abroad/CERN/CERN_Patatrack/trackml-library/train_2/event000002820-hits.csv")
-    for index_to_drop in df_truth_one_track.index:
-        df_truth2 = df_truth_one_track.drop(index = index_to_drop)
-        df_truth_one_track["particle_id"] = df_truth_one_track.track_id  # score function expects particle_id not track_id, set it to be called particle_id
-        volume = int(df_truth_volume_table[df_truth_volume_table.hit_id == index_to_drop].volume_id)
-        if volume == 7: 
-            score_array.append(score_event(df_truth_one_track,df_truth2))
-            volume_array.append(volume)
-            if not volume in number_of_hits_dropped_from_volume:
-                number_of_hits_dropped_from_volume[volume] = 0
-                number_of_hits_dropped_from_volume[volume]+=1
+    #new_hit = df_truth_one_track.iloc[:1]
+    volume = random.choice([7,8,9,12,13,14,16,17,18])
+    mask = df_truth_volume_table.volume_id == volume
+    all_hits_in_volume_12 = df_truth_volume_table[mask]
+    random_hit = all_hits_in_volume_12.sample()
+    new_hit = df_truth[df_truth.hit_id == random_hit.hit_id.iloc[0]]
+    new_hit['particle_id'] = df_truth_one_track.particle_id.iloc[0] 
+    df_truth_one_track_plus_hit = pd.concat([df_truth_one_track, new_hit])
+
+    score_array.append(score_event(df_truth_one_track,df_truth_one_track_plus_hit))
+    volume_array.append(volume)
 
 print(number_of_hits_dropped_from_volume)
 #print(volume_array)

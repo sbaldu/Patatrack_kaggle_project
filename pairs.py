@@ -173,12 +173,12 @@ for i in range(len(hit_files)):
         open_x_file_P = open(path + "not_sorted/x_P" + event_indentifier + ".dat", 'w')
         open_y_file_P = open(path + "not_sorted/y_P" + event_indentifier + ".dat", 'w')
         open_z_file_P = open(path + "not_sorted/z_P" + event_indentifier + ".dat", 'w')
-        open_phi_file_P = open(path + "not_sorted/phi_P" + event_indentifier + ".dat", 'w')
+        #open_phi_file_P = open(path + "not_sorted/phi_P" + event_indentifier + ".dat", 'w')
 
         # Select the df that I'll read
-        hit_df = pd.read_csv(hit_files[i])
-        truth_df = pd.read_csv(truth_files[i])
-        par_df = pd.read_csv(par_files[i])        
+        hit_df = pd.read_csv('/home/simone/Documents/thesis/train_3/event000006000-hits.csv')
+        truth_df = pd.read_csv('/home/simone/Documents/thesis/train_3/event000006000-truth.csv')
+        par_df = pd.read_csv('/home/simone/Documents/thesis/train_3/event000006000-particles.csv')        
         layer_ids = hit_df['layer_id'].values.tolist()
         volume_ids = hit_df['volume_id'].values.tolist()
 
@@ -187,14 +187,14 @@ for i in range(len(hit_files)):
         p_Trasv = p_trasv.rename(columns={0:'pTrasv'})
         par_df = pd.concat([par_df,p_Trasv],axis=1)
 
-        forb_pars = []
-        for j in range(len(par_df['particle_id'].values.tolist())):
-            if par_df['pTrasv'][j] < 2:
-                forb_pars.append(par_df['particle_id'][j])
-        print(forb_pars)
-        print(len(forb_pars))
-        print(len(par_df['particle_id'].values.tolist()))
-        print(par_df)
+        #forb_pars = []
+        #for j in range(len(par_df['particle_id'].values.tolist())):
+        #    if par_df['pTrasv'][j] < 2:
+        #        forb_pars.append(par_df['particle_id'][j])
+        #print(forb_pars)
+        #print(len(forb_pars))
+        #print(len(par_df['particle_id'].values.tolist()))
+        #print(par_df)
 
         #hits_per_event[event_indentifier] = len(layer_ids)
 
@@ -209,42 +209,56 @@ for i in range(len(hit_files)):
         phi = pd.Series(phi_list)       
 
         # Create the final df and sort it
-        total_df_ = pd.concat([hit_df['hit_id'],truth_df['particle_id'],np.sqrt(hit_df['x']**2 + hit_df['y']**2),hit_df['z'],globalIndexes,phi],axis=1)
+        print(len(hit_df['hit_id'].values.tolist()))
+        print(len(truth_df['hit_id'].values.tolist()))
+        total_df_ = pd.concat([hit_df['hit_id'],truth_df['particle_id'],np.sqrt(hit_df['x']**2 + hit_df['y']**2),hit_df['x'],hit_df['y'],hit_df['z'],globalIndexes,phi],axis=1)
         total_df_ = total_df_.rename(columns={0:'r'})
         total_df_ = total_df_.rename(columns={1:'globalIndex'})
         total_df_ = total_df_.rename(columns={2:'phi'})
         total_df_.sort_values(by=['phi'])
+        print(total_df_)
 
-        total_df_size = total_df_['particle_id'].size
-        for k in range(total_df_size):
-            #print(i)
+        allowed_pars = []
+        for j in range(len(par_df['particle_id'].values.tolist())):
+            if par_df['pTrasv'][j] >= 2:
+                allowed_pars.append(par_df['particle_id'][j])
+        print(len(allowed_pars))
+        print(len(truth_df['hit_id'].values.tolist()))
+
+        new_df = total_df_[total_df_['particle_id'].isin(allowed_pars)]
+        new_df = new_df.reset_index()
+        print(new_df)
+
+        new_df_size = len(new_df['particle_id'].values.tolist())
+
+        for k in range(new_df_size):
+            #print(k)
             if total_df_['globalIndex'][k] == 27:
                 break
             else:
-                if (total_df_['particle_id'][k] in forb_pars) == False:
-                    #open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
-                    #open_x_file.write(str(hit_df['x'][i]) + '\n')
-                    #open_y_file.write(str(hit_df['y'][i]) + '\n')
-                    #open_z_file.write(str(hit_df['z'][i]) + '\n')
-                    #open_phi_file.write(str(int(total_df_['phi'][i])) + '\n')
-                    ##open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
-                    ##open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
-                    #open_x_file.write(str(hit_df['x'][i]) + '\n')
-                    #open_y_file.write(str(hit_df['y'][i]) + '\n')
-                    #open_z_file.write(str(hit_df['z'][i]) + '\n')
-                    open_truth_file_P.write(str(total_df_['globalIndex'][k]) + '\n')
-                    open_hit_file_P.write(str(total_df_['particle_id'][k]) + '\n')
-                    open_x_file_P.write(str(hit_df['x'][k]) + '\n')
-                    open_y_file_P.write(str(hit_df['y'][k]) + '\n')
-                    open_z_file_P.write(str(hit_df['z'][k]) + '\n')
-                    open_phi_file_P.write(str(total_df_['phi'][k]) + '\n')
+                #open_truth_file.write(str(new_df['globalIndex'][i]) + '\n')
+                #open_x_file.write(str(hit_df['x'][i]) + '\n')
+                #open_y_file.write(str(hit_df['y'][i]) + '\n')
+                #open_z_file.write(str(hit_df['z'][i]) + '\n')
+                #open_phi_file.write(str(int(total_df_['phi'][i])) + '\n')
+                ##open_hit_file.write(str(total_df_['particle_id'][i]) + '\n')
+                ##open_truth_file.write(str(total_df_['globalIndex'][i]) + '\n')
+                #open_x_file.write(str(hit_df['x'][i]) + '\n')
+                #open_y_file.write(str(hit_df['y'][i]) + '\n')
+                #open_z_file.write(str(hit_df['z'][i]) + '\n')
+                open_truth_file_P.write(str(new_df['globalIndex'][k]) + '\n')
+                open_hit_file_P.write(str(new_df['particle_id'][k]) + '\n')
+                open_x_file_P.write(str(new_df['x'][k]) + '\n')
+                open_y_file_P.write(str(new_df['y'][k]) + '\n')
+                open_z_file_P.write(str(new_df['z'][k]) + '\n')
+                #open_phi_file_P.write(str(total_df_['phi'][k]) + '\n')
     
         open_truth_file_P.close()
         open_hit_file_P.close()
         open_x_file_P.close()
         open_y_file_P.close()
         open_z_file_P.close()
-        open_phi_file_P.close()
+        #open_phi_file_P.close()
         #open_hit_file.close()
         #open_truth_file.close()  
         #open_x_file.close()
