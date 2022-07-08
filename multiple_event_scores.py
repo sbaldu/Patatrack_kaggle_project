@@ -1,5 +1,4 @@
 from curses import KEY_NEXT
-from hashlib import new
 from lib2to3.pgen2 import driver
 from operator import le, truth
 from re import T, sub
@@ -14,35 +13,49 @@ import copy
 from pathlib import Path
 import matplotlib.pyplot as plt
 
-'''Notes:
-- scoring function always returns 1 for individual events, tried for diff ones
-- scoring function returns a little more than 1 for multiple events when normalized (1.00002), less when not (0.9999999)
-- is my normalization wrong?
-- takes a while to run, probably due to big for loops and datasets'''
-
-
 #importing the csv files
 path = '/Users/pfudolig/patatrack/trackml-library-master/trackmlrepo/Patatrack_kaggle_project/train_1'
 
-#just one event 
-hits_file = pandas.read_csv(path + '/event000001004-hits.csv')
-df_hits = pandas.DataFrame(data=hits_file)
-truth_file = pandas.read_csv(path + '/event000001004-truth.csv')
-df_truth = pandas.DataFrame(data=truth_file)
+#Running multiple events through   ** might have to reset index
+def read_in(filepath,count,type):
+    """Given filepath, read in count-amount of each type of file and return one
+    concatenated dataframe"""
+    i=0
+    pathlist = Path(filepath).rglob('*' + type + '.csv')
+    df = None
+    for filepath in pathlist:
+        path_in_str = str(filepath)
+        i += 1
+        toadd = pandas.read_csv(path_in_str)
+        #print(len(toadd['particle_id']))
+        toadd['event'] = path_in_str[99:108]
+        #print(toadd)
+        if df is None: 
+            df = toadd
+        else:
+            df = pandas.concat([df, toadd])
+        if i == count:
+            break
+    return(df)
+
+df_truth = read_in(path,5,'truth')
+df_hits = read_in(path,5,'hits')
+#print(df_hits)
+#print(df_truth)
+
 
 #eliminate all data not in blue detector region
 blue_section = [7,8,9]
 blue_hitsdf = df_hits[df_hits['volume_id'].isin(blue_section)]
 blue_hitcol = blue_hitsdf['hit_id']
 blue_truthdf = df_truth[df_truth['hit_id'].isin(blue_hitcol)]
+blue_truthdf = blue_truthdf.reset_index()
 
 #sum weights and sort by particle
-#grouped_weights = copy.deepcopy(blue_truthdf)
-grouped_weights = pandas.DataFrame(data=blue_truthdf)
+grouped_weights = copy.deepcopy(blue_truthdf)
 grouped_weights = grouped_weights.groupby("particle_id")
 grouped_weights = grouped_weights["weight"].apply(list)
 grouped_weights = grouped_weights.reset_index()
-grouped_weights = grouped_weights.iloc[1:,:]
 
 def calc_Sum(df):
     '''Calculate the sum of weights belonging to each hit of a particle, return dataframe with sums as a column'''
@@ -57,86 +70,81 @@ def calc_Sum(df):
     df = df.drop(['weight'],axis=1)
     df = df.rename(columns={'wsum':'weight'},inplace=False)
     return df
-#grouped_weights = calc_Sum(grouped_weights)
-sort_weights = calc_Sum(grouped_weights)
-#truth = blue_truthdf.groupby("particle_id")
+grouped_weights = calc_Sum(grouped_weights)
+
 
 #sort leftover hits by particle ID and add coln of weight sums              ** this is new truth file to score against
-truth = pandas.DataFrame(data=blue_truthdf)
-truth = truth.groupby("particle_id")
-truth = truth["hit_id"].apply(list)
-truth = truth.reset_index()
-truth = truth.iloc[1:,:]
-truth['weight'] = sort_weights['weight']
-#truth = truth.iloc[2:,:]       #6759 length
-truth.to_csv('truth.csv',index=False)
-plswork = truth.copy(deep=True)
-#print(plswork)
-#plswork = copy.deepcopy(truth)
+grouped_truth = blue_truthdf.groupby("particle_id")
+sorted_hits = grouped_truth["hit_id"].apply(list)
+sorted_hits = sorted_hits.reset_index()
+sorted_hits['weight'] = grouped_weights['weight']
+sorted_hits['event'] = blue_truthdf['event']
+sorted_hits = sorted_hits.iloc[1:,:]       #6759 length
+tracks = sorted_hits['particle_id']
+print(sorted_hits)
+
 
 def changingHits(blue_truth,blue_hits): #slow with random.sample, faster with random.choices but might allow duplicates
-    #Drops/adds a random amount of hits for every group of hits per particle, returns new dataframe
-    #truth_copy = copy.deepcopy(blue_truth.iloc[:,[0,1]])
-    #hits_copy = copy.deepcopy(blue_hits)
-    #truth_hits = truth_copy['hit_id']
-    #hits_hits = hits_copy['hit_id']
-    truth_hits = blue_truth['hit_id']
-    hits_hits = blue_hits['hit_id']
-    new_hitarray = list()
-
+    '''Drops/adds a random amount of hits for every group of hits per particle, returns new dataframe'''
+    truth_copy = copy.deepcopy(blue_truth)
+    hits_copy = copy.deepcopy(blue_hits)
+    truth_hits = truth_copy['hit_id'][1:]
+    hits_hits = hits_copy['hit_id']
+    
     for hit_array in truth_hits:
         if len(hit_array) > 1 and len(hit_array) <= 10:
             ndrop = int(1) #randrange(0,1,1), making a range would be more ideal but idk
             k = randrange(1,2) #start at 1 so no empty arrays
             random_add = random.sample(list(hits_hits),k) #enclose in tuple for tuple appendage instead of array
-            hit_array.append(random_add[0]) #appends as arrays, explode twice later to remove this formatting
+            hit_array.append(random_add) #appends as arrays, explode twice later to remove this formatting
         else:
             ndrop = randrange(0,len(hit_array),1)
             k = randrange(1,10) # again start at 1 so no empty arrays, maybe fix later
             random_add = random.sample(list(hits_hits),k)
-            hit_array.append(random_add[0])
+            hit_array.append(random_add)
         if ndrop >= len(hit_array):
             print('fail') #makes sure no empty arrays
         #dataframe['ndrop'] = ndrop   (optional)
         hit_array.pop(ndrop)
-        new_hitarray.append(hit_array)
-    #truth_copy['hit_id'] = truth_hits
-    blue_truth['hit_id'] = new_hitarray
-
+        
     #truth_copy = truth_copy.explode('hit_id') 
-    blue_truth = blue_truth.rename(columns={'particle_id':'track_id'},inplace=False)
-    blue_truth = blue_truth.iloc[:,[0,1]]
-    #print(truth_copy)
-    #truth_copy = truth_copy.iloc[1:,:]
-    #truth_copy.to_csv('truth.csv',index=False) #can alter later to make overwrite file each time
-    #truth = pandas.DataFrame(data=truth_copy)
-    return(blue_truth)
-submission = changingHits(plswork,blue_hitsdf) #53478 length              ** This is submission file
-#print('truth')
-#print(truth)
-#print('submission')
-#print(submission)
+    #truth_copy = truth_copy.explode('hit_id')
+    truth_copy = truth_copy.rename(columns={'particle_id':'track_id'},inplace=False)
+    truth_copy = truth_copy.iloc[1:,:]
+    truth_copy.to_csv('final_fakes.csv',index=False) #can alter later to make overwrite file each time
+    return truth_copy
+final_fakes = changingHits(sorted_hits,blue_hitsdf) #53478 length              ** This is submission file
 
 
-submission = submission.to_csv('submission.csv',index=False)
-truth = pandas.read_csv('truth.csv')
-submission = pandas.read_csv('submission.csv')
-#print(truth)
-#print('here')
+truth = sorted_hits.to_csv('sorted_hits.csv',index=False)
+submission = final_fakes.to_csv('final_fakes.csv',index=False)
+truth = pandas.read_csv('sorted_hits.csv')
+submission = pandas.read_csv('final_fakes.csv')
 #print(truth)
 #print(submission)
+
+#trids = submission['track_id']
+#pids = truth['particle_id']
+#for pid in pids:
+#    if pid not in trids:
+#        print(pid)
+#if str(4504149383184384) in pids:
+#    print('True')
+#else:
+#    print('False')
+
+
 
 
 ###################################################################
 
 # TEST FILES
-
+'''
 truth_copy1 = df_truth.copy()
 truth_copy1.rename(columns={"particle_id":"track_id"},inplace=True)
-df_truth2 = df_truth.copy()
-truth_copy1 = truth_copy1.iloc[1:,:]
-df_truth2 = df_truth2.iloc[1:,:]
-#df_truth2.rename(columns={"particle_id":"track_id"},inplace=True)
+random_truthfile = pandas.read_csv(path + '/event000001000-truth.csv')
+df_truth2 = pandas.DataFrame(data=random_truthfile)
+df_truth2.rename(columns={"particle_id":"track_id"},inplace=True)'''
 
 ################################################################### 
 
@@ -158,12 +166,11 @@ def _analyze_tracks(truth, submission):
     """
     # true number of hits for each particle_id
     particles_nhits = truth['particle_id'].value_counts(sort=False)
-    print(particles_nhits)
     total_weight = truth['weight'].sum()
     # combined event with minimal reconstructed and truth information
     event = pandas.merge(truth[['hit_id', 'particle_id', 'weight']],
                          submission[['hit_id', 'track_id']],
-                         on=['hit_id'], how='left', validate='m:m') #changed validate='one_to_one'
+                         on=['hit_id'], how='left', validate='one_to_one')
     event.drop('hit_id', axis=1, inplace=True)
     event.sort_values(by=['track_id', 'particle_id'], inplace=True)
     #print(event)
@@ -240,11 +247,11 @@ def _analyze_tracks(truth, submission):
     cols = ['track_id', 'nhits',
             'major_particle_id', 'major_particle_nhits',
             'major_nhits', 'major_weight']
-    #print(hit.track_ids)
     return pandas.DataFrame.from_records(tracks, columns=cols)
 
 #print(_analyze_tracks(df_truth,truth_copy1))
 #print(_analyze_tracks(truth,submission))
+
 
 def score_event(truth, submission):
     """Compute the TrackML event score for a single event.
@@ -261,52 +268,34 @@ def score_event(truth, submission):
         tracks = _analyze_tracks(truth, submission)
     else:"""
     tracks = _analyze_tracks(truth, submission)
-    #print(tracks)
 
 
     ##EDIT: NORMALIZED
-    tracks['major_nhits'] /= tracks['major_nhits'].sum()
-    tracks['nhits'] /= tracks['nhits'].sum()
-    tracks['major_particle_nhits'] /= tracks['major_particle_nhits'].sum()
-    tracks['major_weight'] /= tracks['major_weight'].sum()
+    #tracks['major_nhits'] /= tracks['major_nhits'].sum()
+    #tracks['nhits'] /= tracks['nhits'].sum()
+    #tracks['major_particle_nhits'] /= tracks['major_particle_nhits'].sum()
+    #tracks['major_weight'] /= tracks['major_weight'].sum()
 
     purity_rec = numpy.true_divide(tracks['major_nhits'], tracks['nhits'])
     purity_maj = numpy.true_divide(tracks['major_nhits'], tracks['major_particle_nhits'])
     good_track = (0.5 < purity_rec) & (0.5 < purity_maj)
     return tracks['major_weight'][good_track].sum() #comment out/fix so score is per track not per event
 
-#print(score_event(df_truth2,truth_copy1))
+#print(score_event(df_truth,truth_copy1))
 #print(score_event(truth,submission))
 
-#############################################################
 ##################################################
 
-# TRACKS INSTEAD OF EVENTS
+# PLOTTING
+
 
 '''
-def oneFakeTrack(tracks):
-    #random_track_id = random.sample(list(tracks),k=1)
-    random_track_id = random.choice(tracks,1)
-    track_interest = numpy.empty((0,3),int)
-    print(random_track_id)
-    for track in tracks:
-        if track == random_track_id:
-            return True
-        else:
-            return False
-            #track_interest.append(random_track_id)
-            #track_interest = numpy.append(track_interest, numpy.array([random_track_id]),axis=0)
-            #print(track_interest)
-#print(oneFakeTrack(tracks))'''
-
-
-###############################
-
-# BRAINSTORM
-'''
-def makeTuple(df):
-    for item in df.columns:
-        item = tuple(item)
-    return(df)
-s = makeTuple(truth)
-plswork = pandas.DataFrame(data = s)'''
+def plot(scores):
+    #if multiple events:
+    for 
+    plt.hist(scores)
+    plt.ylabel('Amount')
+    plt.xlabel('Scores')
+    plt.title('Score Distribution of 10 Events (Blue Volumes Only)')
+    #plt.savefig('/Users/pfudolig/patatrack/trackml-library-master/trackmlrepo/trackml-library/trackml/Normalized')
+    plt.show()'''
