@@ -10,6 +10,7 @@ from matplotlib import colors
 import matplotlib as mpl
 from matplotlib.ticker import PercentFormatter
 from mpl_toolkits.mplot3d import Axes3D
+import mplhep as hep 
 import glob
 
 #Define the path to the csv files
@@ -91,26 +92,72 @@ print(p_T)
 
 # Visualize the first 5 particles
 par_ids = [particles_['particle_id'][i] for i in range(5)]
-par_hits = [sort_hits(par_ids[i]) for i in range(5)]    # For some reason the third particle has no hits
+par_hits = [sort_hits(par_ids[i]) for i in range(5)]
+plt.style.use(hep.style.CMS)
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 colour_index = 0
 
-for i in par_hits:
-    x_ = []
-    y_ = []
-    z_ = []
-    for j in i:
-        x_.append(hits_['x'][hit_index(j)])
-        y_.append(hits_['y'][hit_index(j)])
-        z_.append(hits_['z'][hit_index(j)])
-    ax.scatter(z_,x_,y_, c=[colour_index for i in range(len(x_))], label=str(par_ids[colour_index]))      # Remember to add the colour
-    colour_index += 1
+pT = p_Trasv['pTrasv'].values.tolist()
+x1 = []
+y1 = []
+z1 = []
+for i in sort_hits(par_ids[0]):
+    x1.append(hits_['x'][hits_['hit_id'] == i])
+    y1.append(hits_['y'][hits_['hit_id'] == i])
+    z1.append(hits_['z'][hits_['hit_id'] == i])
+x2 = []
+y2 = []
+z2 = []
+for i in sort_hits(par_ids[1]):
+    x2.append(hits_['x'][hits_['hit_id'] == i])
+    y2.append(hits_['y'][hits_['hit_id'] == i])
+    z2.append(hits_['z'][hits_['hit_id'] == i])
+x3 = []
+y3 = []
+z3 = []
+for i in sort_hits(par_ids[2]):
+    x3.append(hits_['x'][hits_['hit_id'] == i])
+    y3.append(hits_['y'][hits_['hit_id'] == i])
+    z3.append(hits_['z'][hits_['hit_id'] == i])
+x4 = []
+y4 = []
+z4 = []
+for i in sort_hits(par_ids[3]):
+    x4.append(hits_['x'][hits_['hit_id'] == i])
+    y4.append(hits_['y'][hits_['hit_id'] == i])
+    z4.append(hits_['z'][hits_['hit_id'] == i])
+x5 = []
+y5 = []
+z5 = []
+for i in sort_hits(par_ids[4]):
+    x5.append(hits_['x'][hits_['hit_id'] == i])
+    y5.append(hits_['y'][hits_['hit_id'] == i])
+    z5.append(hits_['z'][hits_['hit_id'] == i])
 
-ax.set_title("Visualization of the first 5 particles")
-plt.xlabel("z (mm)")
-plt.ylabel("x (mm)")
-ax.set_zlabel("y (mm)")
+#for i in par_hits:
+#    x_ = []
+#    y_ = []
+#    z_ = []
+#    for j in i:
+#        x_.append(hits_['x'][hit_index(j)])
+#        y_.append(hits_['y'][hit_index(j)])
+#        z_.append(hits_['z'][hit_index(j)])
+#    ax.scatter(z_,x_,y_, c=[colour_index for i in range(len(x_))], label=str(par_ids[colour_index]))      # Remember to add the colour
+#    colour_index += 1
+
+ax.scatter(z1,x1,y1, label='pT = 29.97 GeV')
+ax.scatter(z2,x2,y2, label='pT = 1.88 GeV')
+ax.scatter(z3,x3,y3, label='pT = 0.89 GeV')
+ax.scatter(z4,x4,y4, label='pT = 2.29 GeV')
+ax.scatter(z5,x5,y5, label='pT = 0.35 GeV')
+ax.legend()
+fig.tight_layout()
+fig.subplots_adjust(right=0.8)
+plt.legend(loc='center left', bbox_to_anchor=(1.00, 0.5), fontsize=16)
+plt.xlabel("z (mm)", labelpad = 20)
+plt.ylabel("x (mm)", labelpad = 20)
+ax.set_zlabel("y (mm)", labelpad = 20)
 plt.show()
 
 # Group hits by volume and layer, then visualize them
@@ -146,18 +193,118 @@ def vis_same_layer(vol_,lay_):
         x_.append(x_col[index_])
         y_.append(y_col[index_])
         z_.append(z_col[index_])
+    plt.style.use(hep.style.CMS)
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(z_,x_,y_, label=label_)
     ax.legend()
     ax.set_title("Hits on layer " + str(lay_) + " and volume " + str(vol_))
+    #plt.rc('axes', labelsize=50)
+    #plt.rc('xtick', labelsize=50)
+    #plt.rc('ytick', labelsize=50)
     plt.xlabel("z (mm)")
     plt.ylabel("x (mm)")
     ax.set_zlabel("y (mm)")
     plt.xlim(-3000,3000)
+    
     plt.show()
 
-vis_same_layer(7,2)
+#vis_same_layer(7,2)
+
+plt.rc('axes', labelsize=10)
+plt.rc('xtick', labelsize=10)
+plt.rc('ytick', labelsize=10)
+plt.style.use(hep.style.CMS)
+x_7 = []
+y_7 = []
+z_7 = []
+x_8 = []
+y_8 = []
+z_8 = []
+x_9 = []
+y_9 = []
+z_9 = []
+x_12 = []
+y_12 = []
+z_12 = []
+x_13 = []
+y_13 = []
+z_13 = []
+x_14 = []
+y_14 = []
+z_14 = []
+x_16 = []
+y_16 = []
+z_16 = []
+x_17 = []
+y_17 = []
+z_17 = []
+x_18 = []
+y_18 = []
+z_18 = []
+
+for r in range(len(x_col)):
+    if r%5 == 0:
+        if hits_['volume_id'][r] == 7:
+            x_7.append(x_col[r])
+            y_7.append(y_col[r])
+            z_7.append(z_col[r])
+        if hits_['volume_id'][r] == 8:
+            x_8.append(x_col[r])
+            y_8.append(y_col[r])
+            z_8.append(z_col[r])
+        if hits_['volume_id'][r] == 9:
+            x_9.append(x_col[r])
+            y_9.append(y_col[r])
+            z_9.append(z_col[r])
+        if hits_['volume_id'][r] == 12:
+            x_12.append(x_col[r])
+            y_12.append(y_col[r])
+            z_12.append(z_col[r])
+        if hits_['volume_id'][r] == 13:
+            x_13.append(x_col[r])
+            y_13.append(y_col[r])
+            z_13.append(z_col[r])
+        if hits_['volume_id'][r] == 14:
+            x_14.append(x_col[r])
+            y_14.append(y_col[r])
+            z_14.append(z_col[r])
+        if hits_['volume_id'][r] == 16:
+            x_16.append(x_col[r])
+            y_16.append(y_col[r])
+            z_16.append(z_col[r])
+        if hits_['volume_id'][r] == 17:
+            x_17.append(x_col[r])
+            y_17.append(y_col[r])
+            z_17.append(z_col[r])
+        if hits_['volume_id'][r] == 18:
+            x_18.append(x_col[r])
+            y_18.append(y_col[r])
+            z_18.append(z_col[r])
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(z_7,x_7,y_7, label='volume 7')
+ax.scatter(z_8,x_8,y_8, label='volume 8')
+ax.scatter(z_9,x_9,y_9, label='volume 9')
+ax.scatter(z_12,x_12,y_12, label='volume 12')
+ax.scatter(z_13,x_13,y_13, label='volume 13')
+ax.scatter(z_14,x_14,y_14, label='volume 14')
+ax.scatter(z_16,x_16,y_16, label='volume 16')
+ax.scatter(z_17,x_17,y_17, label='volume 17')
+ax.scatter(z_18,x_18,y_18, label='volume 18')
+
+ax.legend()
+fig.tight_layout()
+fig.subplots_adjust(right=0.8)
+plt.legend(loc='center left', bbox_to_anchor=(1.00, 0.5), fontsize=16)
+plt.xlabel("z (mm)", labelpad = 20)
+plt.ylabel("x (mm)", labelpad = 20)
+ax.set_zlabel("y (mm)", labelpad = 20)
+plt.xlim(-3200,3200)
+
+
+plt.show()
 
 # Define the function that introduces the new index for the detector layers
 maxLayerId = 14
@@ -214,7 +361,7 @@ def write_to_dat(event_):       # event_ should be the path to the file written 
     for i in range(length):
         open_file.write(str(layerGlobalIndex(vol_col[i],lay_col[i])) + '\n')
     open_file.close()
-write_to_dat(hit_files[10])
+#write_to_dat(hit_files[10])
 
 def write_to_csv(event_):       # Same thing but it writes the data to a csv file
     event = pd.read_csv(event_)

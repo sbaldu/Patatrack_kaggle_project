@@ -12,6 +12,7 @@ from matplotlib import colors
 import matplotlib as mpl
 from matplotlib.ticker import PercentFormatter
 from mpl_toolkits.mplot3d import Axes3D
+import mplhep as hep 
 import glob
 
 path = '/home/simone/Documents/thesis/not_sorted/'
@@ -52,6 +53,7 @@ for i in range(col.size):
         else: 
             pairs_bl[str(first_pairs_df['pair'][i])] = 1
 print('hits blue = ' + str(count_bl)) # 7459
+plt.style.use(hep.style.CMS)
 plt.bar(pairs_bl.keys(), pairs_bl.values())
 plt.xticks(rotation = 45) 
 figsize = (20, 20)
@@ -69,6 +71,7 @@ for i in range(col.size):
         else: 
             pairs_[str(first_pairs_df['pair'][i])] = 1
 print('hits from a volume to volume 7 = ' + str(count7)) # 7459
+plt.style.use(hep.style.CMS)
 plt.bar(pairs_.keys(), pairs_.values())
 plt.xticks(rotation = 45) 
 plt.xlabel('Coppie di Layers')
